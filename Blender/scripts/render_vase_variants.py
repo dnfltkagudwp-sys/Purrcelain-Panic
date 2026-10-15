@@ -11,7 +11,7 @@ from mathutils import Vector
 out = sys.argv[sys.argv.index("--") + 1]
 scene = bpy.context.scene
 scene.render.engine = 'BLENDER_EEVEE'
-scene.render.resolution_x, scene.render.resolution_y = 1800, 900
+scene.render.resolution_x, scene.render.resolution_y = 1600, 1000
 scene.view_settings.view_transform = 'Standard'
 world = scene.world or bpy.data.worlds.new("W")
 scene.world = world
@@ -24,12 +24,12 @@ for o in scene.objects:
 sets = [("Vase_Intact", "Vase_Broken_Root"), ("Vase_Tall_Intact", "Vase_Tall_Broken_Root"),
         ("Vase_Squat_Intact", "Vase_Squat_Broken_Root")]
 for i, (intact_name, root_name) in enumerate(sets):
-    x = (i - 1) * 0.75
+    x = (i - 1) * 0.6
     intact = bpy.data.objects[intact_name]
-    intact.location = (x - 0.15, 0, 0)
+    intact.location = (x - 0.13, 0, 0)
     intact.hide_render = False
     root = bpy.data.objects[root_name]
-    root.location = (x + 0.17, 0, 0)
+    root.location = (x + 0.14, 0, 0)
     for s in root.children:
         c = s.matrix_local.translation
         d = Vector((c.x, c.y, (c.z - 0.12) * 0.5))
@@ -47,7 +47,7 @@ scene.collection.objects.link(sun)
 
 cam = bpy.data.objects.new("Cam", bpy.data.cameras.new("Cam"))
 cam.data.type = 'ORTHO'
-cam.data.ortho_scale = 2.3
+cam.data.ortho_scale = 2.0
 direction = Vector((0.15, -1.0, 0.35)).normalized()
 target = Vector((0, 0, 0.17))
 cam.location = target + direction * 6
