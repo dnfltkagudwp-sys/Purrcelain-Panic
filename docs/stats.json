@@ -1,0 +1,505 @@
+{
+  "raw": {
+    "CAT_Body": {
+      "file": "cat_rigged.glb",
+      "size_m": [
+        1.0,
+        0.509,
+        0.842
+      ],
+      "tris": 50000,
+      "seam_split_edges": 8244,
+      "hole_edges": 0,
+      "non_manifold_edges": 0,
+      "flipped_faces": 0,
+      "islands": 1,
+      "volume": 0.067066
+    },
+    "TABLE_Main": {
+      "file": "table_raw.glb",
+      "size_m": [
+        0.996,
+        0.697,
+        0.577
+      ],
+      "tris": 20000,
+      "seam_split_edges": 4636,
+      "hole_edges": 0,
+      "non_manifold_edges": 0,
+      "flipped_faces": 0,
+      "islands": 1,
+      "volume": 0.089759
+    },
+    "Vase_Intact": {
+      "file": "vase_raw.glb",
+      "size_m": [
+        0.641,
+        0.641,
+        1.002
+      ],
+      "tris": 20000,
+      "seam_split_edges": 2260,
+      "hole_edges": 0,
+      "non_manifold_edges": 0,
+      "flipped_faces": 0,
+      "islands": 1,
+      "volume": 0.154314
+    }
+  },
+  "removed_on_import": [
+    "Icosphere"
+  ],
+  "cat": {
+    "before": {
+      "tris": 50000,
+      "seam_split_edges": 8244,
+      "hole_edges": 0,
+      "non_manifold_edges": 0,
+      "flipped_faces": 0,
+      "islands": 1,
+      "volume": 0.067066
+    },
+    "clean": {
+      "merged_verts": 4268,
+      "removed_islands": 0,
+      "removed_loose_verts": 0,
+      "filled_hole_faces": 0,
+      "fixed_flipped_faces": 0
+    },
+    "weights": {
+      "unweighted_verts": 0,
+      "verts_over_4_bones_before": 387,
+      "fix": "clean<0.01, limit 4, normalize all"
+    },
+    "arm_pitch_delta_deg": 13.0,
+    "wrist_z_base_pose": 0.67,
+    "reach": {
+      "idle_paw_forward_m": 0.47,
+      "push_contact_forward_m": 0.526,
+      "push_contact_x_m": 0.064,
+      "push_contact_z_m": 0.662,
+      "belly_front_m": 0.273,
+      "table_top_z_m": 0.62
+    },
+    "after": {
+      "tris": 20000,
+      "seam_split_edges": 0,
+      "hole_edges": 0,
+      "non_manifold_edges": 0,
+      "flipped_faces": 0,
+      "islands": 1,
+      "volume": 0.170873
+    },
+    "size_m": [
+      0.734,
+      0.888,
+      1.147
+    ],
+    "origin": "feet center (0,0,0)",
+    "scale_factor": 1.366,
+    "shoulder_height_m": 0.679,
+    "rig_scale": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "body_scale": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "actions": {
+      "Idle_Lean": [
+        1.0,
+        31.0
+      ],
+      "Push_R": [
+        1.0,
+        16.0
+      ]
+    }
+  },
+  "vase": {
+    "before": {
+      "tris": 20000,
+      "seam_split_edges": 2260,
+      "hole_edges": 0,
+      "non_manifold_edges": 0,
+      "flipped_faces": 0,
+      "islands": 1,
+      "volume": 0.154314
+    },
+    "clean": {
+      "merged_verts": 1150,
+      "removed_islands": 0,
+      "removed_loose_verts": 0,
+      "filled_hole_faces": 0,
+      "fixed_flipped_faces": 0
+    },
+    "intact": {
+      "tris": 6000,
+      "seam_split_edges": 0,
+      "hole_edges": 0,
+      "non_manifold_edges": 0,
+      "flipped_faces": 0,
+      "islands": 1,
+      "volume": 0.004145
+    },
+    "cut_face_uv": [
+      0.883,
+      0.2626
+    ],
+    "cut_face_color": [
+      0.984,
+      0.984,
+      0.984
+    ],
+    "shards": {
+      "Vase_Shard_01": {
+        "tris": 844,
+        "seam_split_edges": 0,
+        "hole_edges": 0,
+        "non_manifold_edges": 0,
+        "flipped_faces": 0,
+        "islands": 1,
+        "volume": 0.000356,
+        "volume_pct": 8.6,
+        "min_dim_cm": 9.0
+      },
+      "Vase_Shard_02": {
+        "tris": 882,
+        "seam_split_edges": 0,
+        "hole_edges": 0,
+        "non_manifold_edges": 0,
+        "flipped_faces": 0,
+        "islands": 1,
+        "volume": 0.000363,
+        "volume_pct": 8.8,
+        "min_dim_cm": 9.5
+      },
+      "Vase_Shard_03": {
+        "tris": 862,
+        "seam_split_edges": 0,
+        "hole_edges": 0,
+        "non_manifold_edges": 0,
+        "flipped_faces": 0,
+        "islands": 1,
+        "volume": 0.000365,
+        "volume_pct": 8.8,
+        "min_dim_cm": 9.5
+      },
+      "Vase_Shard_04": {
+        "tris": 622,
+        "seam_split_edges": 0,
+        "hole_edges": 0,
+        "non_manifold_edges": 0,
+        "flipped_faces": 0,
+        "islands": 1,
+        "volume": 0.000641,
+        "volume_pct": 15.5,
+        "min_dim_cm": 9.9
+      },
+      "Vase_Shard_05": {
+        "tris": 736,
+        "seam_split_edges": 0,
+        "hole_edges": 0,
+        "non_manifold_edges": 0,
+        "flipped_faces": 0,
+        "islands": 1,
+        "volume": 0.000759,
+        "volume_pct": 18.3,
+        "min_dim_cm": 11.0
+      },
+      "Vase_Shard_06": {
+        "tris": 686,
+        "seam_split_edges": 0,
+        "hole_edges": 0,
+        "non_manifold_edges": 0,
+        "flipped_faces": 0,
+        "islands": 1,
+        "volume": 0.000732,
+        "volume_pct": 17.7,
+        "min_dim_cm": 9.6
+      },
+      "Vase_Shard_07": {
+        "tris": 746,
+        "seam_split_edges": 0,
+        "hole_edges": 0,
+        "non_manifold_edges": 0,
+        "flipped_faces": 0,
+        "islands": 1,
+        "volume": 0.00041,
+        "volume_pct": 9.9,
+        "min_dim_cm": 9.0
+      },
+      "Vase_Shard_08": {
+        "tris": 864,
+        "seam_split_edges": 0,
+        "hole_edges": 0,
+        "non_manifold_edges": 0,
+        "flipped_faces": 0,
+        "islands": 1,
+        "volume": 0.000322,
+        "volume_pct": 7.8,
+        "min_dim_cm": 10.2
+      },
+      "Vase_Shard_09": {
+        "tris": 2258,
+        "seam_split_edges": 0,
+        "hole_edges": 0,
+        "non_manifold_edges": 0,
+        "flipped_faces": 0,
+        "islands": 1,
+        "volume": 0.000196,
+        "volume_pct": 4.7,
+        "min_dim_cm": 10.2
+      }
+    },
+    "shard_count": 9,
+    "dropped_small_seeds": 1,
+    "size_m": [
+      0.192,
+      0.192,
+      0.3
+    ]
+  },
+  "table": {
+    "before": {
+      "tris": 20000,
+      "seam_split_edges": 4636,
+      "hole_edges": 0,
+      "non_manifold_edges": 0,
+      "flipped_faces": 0,
+      "islands": 1,
+      "volume": 0.089759
+    },
+    "clean": {
+      "merged_verts": 2381,
+      "removed_islands": 0,
+      "removed_loose_verts": 0,
+      "filled_hole_faces": 0,
+      "fixed_flipped_faces": 0
+    },
+    "size_before_resize_m": [
+      1.243,
+      0.87,
+      0.72
+    ],
+    "after": {
+      "tris": 5000,
+      "seam_split_edges": 0,
+      "hole_edges": 0,
+      "non_manifold_edges": 0,
+      "flipped_faces": 0,
+      "islands": 1,
+      "volume": 0.170861
+    },
+    "size_m": [
+      1.8,
+      0.6,
+      0.62
+    ],
+    "origin": "bottom center (0,0,0)",
+    "front": "-Y (긴 면이 정면, Unity +Z)"
+  },
+  "materials": {
+    "CAT_Body": {
+      "material": "material_0 -> M_Cat",
+      "texture": "T_Cat_BaseColor.png",
+      "mean_hsv_before": [
+        0.077,
+        0.613,
+        0.832
+      ],
+      "mean_hsv_after": [
+        0.077,
+        0.728,
+        0.901
+      ],
+      "saturation_x": 1.2,
+      "value_x": 1.08,
+      "value_lift": 0.0,
+      "roughness": 0.65,
+      "metallic": 0.0
+    },
+    "TABLE_Main": {
+      "material": "material_0.001 -> M_Table",
+      "texture": "T_Table_BaseColor.png",
+      "mean_hsv_before": [
+        0.07,
+        0.712,
+        0.54
+      ],
+      "mean_hsv_after": [
+        0.07,
+        0.569,
+        0.5
+      ],
+      "saturation_x": 0.8,
+      "value_x": 0.925,
+      "value_lift": 0.0,
+      "roughness": 0.65,
+      "metallic": 0.0
+    },
+    "Vase_Intact": {
+      "material": "material_0.002 -> M_Vase",
+      "texture": "T_Vase_BaseColor.png",
+      "mean_hsv_before": [
+        0.3,
+        0.066,
+        0.781
+      ],
+      "mean_hsv_after": [
+        0.3,
+        0.072,
+        0.838
+      ],
+      "saturation_x": 1.1,
+      "value_x": 0.88,
+      "value_lift": 0.14,
+      "roughness": 0.35,
+      "metallic": 0.0
+    }
+  },
+  "export": {
+    "Cat_Player.fbx": {
+      "objects": [
+        "CAT_Rig",
+        "CAT_Body (parent: CAT_Rig)"
+      ],
+      "tris": {
+        "CAT_Body": 20000
+      },
+      "size_m": [
+        1.366,
+        0.695,
+        1.15
+      ],
+      "bottom_z": -0.0,
+      "materials": [
+        "M_Cat"
+      ],
+      "issues": [],
+      "file_kb": 1118
+    },
+    "Table_Main.fbx": {
+      "objects": [
+        "TABLE_Main"
+      ],
+      "tris": {
+        "TABLE_Main": 5000
+      },
+      "size_m": [
+        1.8,
+        0.6,
+        0.62
+      ],
+      "bottom_z": 0.0001,
+      "materials": [
+        "M_Table"
+      ],
+      "issues": [],
+      "file_kb": 199
+    },
+    "Vase_Set.fbx": {
+      "objects": [
+        "Vase_Intact",
+        "Vase_Broken_Root",
+        "Vase_Shard_01 (parent: Vase_Broken_Root)",
+        "Vase_Shard_02 (parent: Vase_Broken_Root)",
+        "Vase_Shard_03 (parent: Vase_Broken_Root)",
+        "Vase_Shard_04 (parent: Vase_Broken_Root)",
+        "Vase_Shard_05 (parent: Vase_Broken_Root)",
+        "Vase_Shard_06 (parent: Vase_Broken_Root)",
+        "Vase_Shard_07 (parent: Vase_Broken_Root)",
+        "Vase_Shard_08 (parent: Vase_Broken_Root)",
+        "Vase_Shard_09 (parent: Vase_Broken_Root)"
+      ],
+      "tris": {
+        "Vase_Intact": 6000,
+        "Vase_Shard_01": 844,
+        "Vase_Shard_02": 882,
+        "Vase_Shard_03": 862,
+        "Vase_Shard_04": 622,
+        "Vase_Shard_05": 736,
+        "Vase_Shard_06": 686,
+        "Vase_Shard_07": 746,
+        "Vase_Shard_08": 864,
+        "Vase_Shard_09": 2258
+      },
+      "size_m": [
+        0.192,
+        0.192,
+        0.3
+      ],
+      "bottom_z": 0.0,
+      "materials": [
+        "M_Vase"
+      ],
+      "issues": [],
+      "file_kb": 476
+    }
+  },
+  "export_verify": {
+    "Cat_Player.fbx": {
+      "objects": [
+        "CAT_Body",
+        "CAT_Rig"
+      ],
+      "size_m": [
+        0.734,
+        0.888,
+        1.147
+      ],
+      "bottom_z": -0.0,
+      "actions": [
+        "CAT_Rig|Idle_Lean",
+        "CAT_Rig|Push_R"
+      ],
+      "Idle_Lean_hand_err_mm": 0.0,
+      "Idle_Lean_frames": [
+        1.0,
+        31.0
+      ],
+      "Push_R_hand_err_mm": 0.0,
+      "Push_R_frames": [
+        1.0,
+        16.0
+      ]
+    },
+    "Table_Main.fbx": {
+      "objects": [
+        "TABLE_Main"
+      ],
+      "size_m": [
+        1.8,
+        0.6,
+        0.62
+      ],
+      "bottom_z": 0.0001,
+      "actions": []
+    },
+    "Vase_Set.fbx": {
+      "objects": [
+        "Vase_Broken_Root",
+        "Vase_Intact",
+        "Vase_Shard_01",
+        "Vase_Shard_02",
+        "Vase_Shard_03",
+        "Vase_Shard_04",
+        "Vase_Shard_05",
+        "Vase_Shard_06",
+        "Vase_Shard_07",
+        "Vase_Shard_08",
+        "Vase_Shard_09"
+      ],
+      "size_m": [
+        0.192,
+        0.192,
+        0.3
+      ],
+      "bottom_z": -0.0,
+      "actions": []
+    }
+  }
+}
