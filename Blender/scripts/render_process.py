@@ -437,7 +437,7 @@ montage([os.path.join(PANEL_DIR, "scale_origin.png")], "P6_크기_원점", cols=
 
 # ------------------------------------------------------------------ P7 애니메이션 키포즈
 
-def pose_panel(action, frame, title):
+def pose_panel(action, frame, title, side=-1):
     scene = reset()
     eevee(scene)
     rig = bpy.data.objects["CAT_Rig"]
@@ -446,7 +446,7 @@ def pose_panel(action, frame, title):
     scene.frame_set(frame)
     table = bpy.data.objects["TABLE_Main"]
     show(*meshes_of("CAT_Rig"), table)
-    cam = frame_camera(scene, meshes_of("CAT_Rig") + [table], view=Vector((-0.45, -1.0, 0.9)).normalized(),
+    cam = frame_camera(scene, meshes_of("CAT_Rig") + [table], view=Vector((0.45 * side, -1.0, 0.9)).normalized(),
                        pad=0.95, target=Vector((0, 0.05, 0.62)))
     add_label(scene, cam, f"{action} · {frame}F")
     add_label(scene, cam, title, line=1, size=0.045)
@@ -459,3 +459,6 @@ montage([pose_panel("Push_R", 1, "기본 자세"), pose_panel("Push_R", 4, "준�
 montage([pose_panel("Idle_Lean", 1, "시작 (=31F)"), pose_panel("Idle_Lean", 8, "머리 기울임"),
          pose_panel("Idle_Lean", 16, "들숨 + 머리 돌림"), pose_panel("Idle_Lean", 24, "반대로 기울임")],
         "P8_Idle_Lean_키포즈", cols=4)
+montage([pose_panel("Push_L", 1, "기본 자세", 1), pose_panel("Push_L", 4, "준비: 왼팔 뒤로", 1),
+         pose_panel("Push_L", 8, "접촉: 앞으로 뻗기", 1), pose_panel("Push_L", 16, "기본 자세로 복귀", 1)],
+        "P9_Push_L_키포즈", cols=4)

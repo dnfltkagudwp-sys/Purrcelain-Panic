@@ -214,3 +214,20 @@ Unity에서 측정한 값 (정점 기준):
 
 세 정리 후 에셋 모두 Unity에서 Rotation (0,0,0), Scale (1,1,1).
 참고: 정리 전 도자기의 어두운 줄무늬는 VARCO 원본 머티리얼의 두 번째 텍스처가 Unity에서 다르게 해석된 것으로, 정리 후 머티리얼(`M_Vase`)에는 없다.
+
+---
+
+## 요청문 6 — 왼손 밀기 Push_L (추가 요청)
+
+> 왼손 PUSH_1도 만들어줘. PUSH_R이랑 동일하게, 손만 바꿔서 만들어주면 돼.
+
+| 항목 | 처리 |
+|---|---|
+| 이름 | `PUSH_1`은 `Push_R`과 짝이 맞도록 `Push_L`로 정리 |
+| 만드는 방법 | `Push_R` 키 포즈(`PUSH_R_KEYS`)를 좌우 반전: Right↔Left 본 이름 교체 + 좌우 대칭이므로 Y·Z축 회전 부호 반전 (`01_cat.mirror_keys`) |
+| 타이밍 | `Push_R`과 동일: 16프레임 1회, 1 기본 → 4 준비 → 8 접촉 → 16 복귀, 4→8 Linear |
+| 거울 검증 | 각 키에서 왼손 끝과 오른손 끝을 X축 대칭으로 비교 → 1·4·8·16F 모두 오차 0.0 mm |
+| FBX | `Cat_Player.fbx`에 클립 3개(Idle_Lean, Push_R, Push_L), 다시 불러와 왼손 위치 오차 0 mm |
+| Unity | Humanoid Avatar 정상, `Push_L` Loop Time OFF, 0.50초 |
+
+키포즈 이미지: `Captures/process/P9_Push_L_키포즈.png`

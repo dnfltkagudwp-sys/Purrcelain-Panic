@@ -164,36 +164,60 @@ key_pose(31, pose({"Head": [(X, -5), (Z, -4)]}))
 finish_action(idle, 1, 31, cyclic=True)
 
 # --- Push_R: 16프레임 1회 동작
-push = new_action("Push_R")
-key_pose(1, pose())
-key_pose(4, pose({                                                  # 준비: 오른팔 뒤로
-    "Spine2": [(X, 3), (Z, -8)],
-    "RightShoulder": [(Z, -14)],
-    "RightArm": [(Z, 42), (X, -24)],
-    "RightForeArm": [(Z, 72), (X, 16)],
-    "RightHand": [(X, 10)],
-}))
-key_pose(8, pose({                                                  # 접촉: 손을 앞으로 쭉
-    "Spine1": [(X, 10)],
-    "Spine2": [(X, 4), (Z, 14)],
-    "RightShoulder": [(Z, 24)],
-    "RightArm": [(Z, 88), (X, -30)],
-    "RightForeArm": [(Z, 4), (X, 6)],
-    "RightHand": [(X, -30)],
-}))
-key_pose(16, pose())
-finish_action(push, 1, 16, cyclic=False)
-# 준비 → 접촉 구간은 빠르게
-for fc in action_fcurves(push):
-    for kp in fc.keyframe_points:
-        if int(kp.co.x) == 4:
-            kp.interpolation = 'LINEAR'
+PUSH_R_KEYS = {
+    4: {                                                            # 준비: 오른팔 뒤로
+        "Spine2": [(X, 3), (Z, -8)],
+        "RightShoulder": [(Z, -14)],
+        "RightArm": [(Z, 42), (X, -24)],
+        "RightForeArm": [(Z, 72), (X, 16)],
+        "RightHand": [(X, 10)],
+    },
+    8: {                                                            # 접촉: 손을 앞으로 쭉
+        "Spine1": [(X, 10)],
+        "Spine2": [(X, 4), (Z, 14)],
+        "RightShoulder": [(Z, 24)],
+        "RightArm": [(Z, 88), (X, -30)],
+        "RightForeArm": [(Z, 4), (X, 6)],
+        "RightHand": [(X, -30)],
+    },
+}
+
+
+def mirror_keys(keys):
+    """좌우 반전: Right↔Left 본 이름을 바꾸고, YZ 평면 대칭이므로 Y·Z축 회전 부호를 뒤집는다."""
+    out = {}
+    for frame, bones in keys.items():
+        m = {}
+        for name, rots in bones.items():
+            name = name.replace("Right", "#TMP#").replace("Left", "Right").replace("#TMP#", "Left")
+            m[name] = [(axis, deg if axis == X else -deg) for axis, deg in rots]
+        out[frame] = m
+    return out
+
+
+def make_push(name, keys):
+    act = new_action(name)
+    key_pose(1, pose())
+    for frame, overrides in keys.items():
+        key_pose(frame, pose(overrides))
+    key_pose(16, pose())
+    finish_action(act, 1, 16, cyclic=False)
+    for fc in action_fcurves(act):                                  # 준비 → 접촉 구간은 빠르게
+        for kp in fc.keyframe_points:
+            if int(kp.co.x) == 4:
+                kp.interpolation = 'LINEAR'
+    return act
+
+
+push = make_push("Push_R", PUSH_R_KEYS)
+push_l = make_push("Push_L", mirror_keys(PUSH_R_KEYS))   # 요청문 6: 왼손 밀기 (Push_R 좌우 반전)
+
 
 # 손이 닿는 범위 측정 (고양이 원점 기준, -Y = 앞)
-def paw_tip(frame, act):
+def paw_tip(frame, act, side="Right"):
     rig.animation_data.action = act
     scene.frame_set(frame)
-    return rig.matrix_world @ pb["RightHand"].tail
+    return rig.matrix_world @ pb[f"{side}Hand"].tail
 
 
 cat["reach"] = {
@@ -204,6 +228,14 @@ cat["reach"] = {
     "belly_front_m": round(-min(v.co.y for v in body.data.vertices if v.co.z < 0.6), 3),
     "table_top_z_m": TABLE_SIZE[2],
 }
+# Push_L이 Push_R의 거울상인지 확인: 각 키 프레임에서 손끝 위치를 X축 대칭으로 비교
+cat["push_mirror_check"] = {}
+for f in (1, 4, 8, 16):
+    r = paw_tip(f, push, "Right")
+    l = paw_tip(f, push_l, "Left")
+    cat["push_mirror_check"][f"F{f}"] = {
+        "right_tip": [round(v, 3) for v in r], "left_tip": [round(v, 3) for v in l],
+        "mirror_err_mm": round((Vector((-l.x, l.y, l.z)) - r).length * 1000, 1)}
 
 rig.animation_data.action = idle
 scene.frame_start, scene.frame_end = 1, 31
@@ -218,7 +250,7 @@ cat["scale_factor"] = round(factor, 4)
 cat["shoulder_height_m"] = round((rig.matrix_world @ rig.data.bones["RightArm"].head_local).z, 3)
 cat["rig_scale"] = list(rig.scale)
 cat["body_scale"] = list(body.scale)
-cat["actions"] = {a.name: list(a.frame_range) for a in (idle, push)}
+cat["actions"] = {a.name: list(a.frame_range) for a in (idle, push, push_l)}
 save_stats(stats)
 bpy.ops.wm.save_mainfile()
 for k, v in cat.items():

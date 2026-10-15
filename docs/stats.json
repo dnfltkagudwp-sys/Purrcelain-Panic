@@ -81,6 +81,60 @@
       "belly_front_m": 0.273,
       "table_top_z_m": 0.62
     },
+    "push_mirror_check": {
+      "F1": {
+        "right_tip": [
+          -0.165,
+          -0.47,
+          0.664
+        ],
+        "left_tip": [
+          0.165,
+          -0.47,
+          0.664
+        ],
+        "mirror_err_mm": 0.0
+      },
+      "F4": {
+        "right_tip": [
+          -0.345,
+          -0.31,
+          0.619
+        ],
+        "left_tip": [
+          0.345,
+          -0.31,
+          0.619
+        ],
+        "mirror_err_mm": 0.0
+      },
+      "F8": {
+        "right_tip": [
+          0.064,
+          -0.526,
+          0.662
+        ],
+        "left_tip": [
+          -0.064,
+          -0.526,
+          0.662
+        ],
+        "mirror_err_mm": 0.0
+      },
+      "F16": {
+        "right_tip": [
+          -0.165,
+          -0.47,
+          0.664
+        ],
+        "left_tip": [
+          0.165,
+          -0.47,
+          0.664
+        ],
+        "mirror_err_mm": 0.0
+      }
+    },
     "after": {
       "tris": 20000,
       "seam_split_edges": 0,
@@ -114,6 +168,10 @@
         31.0
       ],
       "Push_R": [
+        1.0,
+        16.0
+      ],
+      "Push_L": [
         1.0,
         16.0
       ]
@@ -380,7 +438,7 @@
         "M_Cat"
       ],
       "issues": [],
-      "file_kb": 1118
+      "file_kb": 1266
     },
     "Table_Main.fbx": {
       "objects": [
@@ -454,6 +512,7 @@
       "bottom_z": -0.0,
       "actions": [
         "CAT_Rig|Idle_Lean",
+        "CAT_Rig|Push_L",
         "CAT_Rig|Push_R"
       ],
       "Idle_Lean_hand_err_mm": 0.0,
@@ -463,6 +522,11 @@
       ],
       "Push_R_hand_err_mm": 0.0,
       "Push_R_frames": [
+        1.0,
+        16.0
+      ],
+      "Push_L_hand_err_mm": 0.0,
+      "Push_L_frames": [
         1.0,
         16.0
       ]
