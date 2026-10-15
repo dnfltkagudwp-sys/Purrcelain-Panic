@@ -419,6 +419,60 @@
       "metallic": 0.0
     }
   },
+  "vase_variants": {
+    "Tall": {
+      "scale_xyz": [
+        0.9,
+        0.9,
+        1.22
+      ],
+      "size_m": [
+        0.173,
+        0.173,
+        0.366
+      ],
+      "intact": {
+        "tris": 6000,
+        "seam_split_edges": 0,
+        "hole_edges": 0,
+        "non_manifold_edges": 0,
+        "flipped_faces": 0,
+        "islands": 1,
+        "volume": 0.004096
+      },
+      "material": "M_Vase_Tall",
+      "texture": "T_Vase_Tall_BaseColor.png",
+      "shards": 9,
+      "shard_tris_total": 8500,
+      "shard_problems": {}
+    },
+    "Squat": {
+      "scale_xyz": [
+        1.16,
+        1.16,
+        0.78
+      ],
+      "size_m": [
+        0.223,
+        0.223,
+        0.234
+      ],
+      "intact": {
+        "tris": 6000,
+        "seam_split_edges": 0,
+        "hole_edges": 0,
+        "non_manifold_edges": 0,
+        "flipped_faces": 0,
+        "islands": 1,
+        "volume": 0.00435
+      },
+      "material": "M_Vase_Squat",
+      "texture": "T_Vase_Squat_BaseColor.png",
+      "shards": 9,
+      "shard_tris_total": 8500,
+      "shard_problems": {}
+    }
+  },
   "export": {
     "Cat_Player.fbx": {
       "objects": [
@@ -496,6 +550,82 @@
       ],
       "issues": [],
       "file_kb": 476
+    },
+    "Vase_Tall_Set.fbx": {
+      "objects": [
+        "Vase_Tall_Intact",
+        "Vase_Tall_Broken_Root",
+        "Vase_Tall_Shard_01 (parent: Vase_Tall_Broken_Root)",
+        "Vase_Tall_Shard_02 (parent: Vase_Tall_Broken_Root)",
+        "Vase_Tall_Shard_03 (parent: Vase_Tall_Broken_Root)",
+        "Vase_Tall_Shard_04 (parent: Vase_Tall_Broken_Root)",
+        "Vase_Tall_Shard_05 (parent: Vase_Tall_Broken_Root)",
+        "Vase_Tall_Shard_06 (parent: Vase_Tall_Broken_Root)",
+        "Vase_Tall_Shard_07 (parent: Vase_Tall_Broken_Root)",
+        "Vase_Tall_Shard_08 (parent: Vase_Tall_Broken_Root)",
+        "Vase_Tall_Shard_09 (parent: Vase_Tall_Broken_Root)"
+      ],
+      "tris": {
+        "Vase_Tall_Intact": 6000,
+        "Vase_Tall_Shard_01": 844,
+        "Vase_Tall_Shard_02": 882,
+        "Vase_Tall_Shard_03": 862,
+        "Vase_Tall_Shard_04": 622,
+        "Vase_Tall_Shard_05": 736,
+        "Vase_Tall_Shard_06": 686,
+        "Vase_Tall_Shard_07": 746,
+        "Vase_Tall_Shard_08": 864,
+        "Vase_Tall_Shard_09": 2258
+      },
+      "size_m": [
+        0.173,
+        0.173,
+        0.366
+      ],
+      "bottom_z": 0.0,
+      "materials": [
+        "M_Vase_Tall"
+      ],
+      "issues": [],
+      "file_kb": 477
+    },
+    "Vase_Squat_Set.fbx": {
+      "objects": [
+        "Vase_Squat_Intact",
+        "Vase_Squat_Broken_Root",
+        "Vase_Squat_Shard_01 (parent: Vase_Squat_Broken_Root)",
+        "Vase_Squat_Shard_02 (parent: Vase_Squat_Broken_Root)",
+        "Vase_Squat_Shard_03 (parent: Vase_Squat_Broken_Root)",
+        "Vase_Squat_Shard_04 (parent: Vase_Squat_Broken_Root)",
+        "Vase_Squat_Shard_05 (parent: Vase_Squat_Broken_Root)",
+        "Vase_Squat_Shard_06 (parent: Vase_Squat_Broken_Root)",
+        "Vase_Squat_Shard_07 (parent: Vase_Squat_Broken_Root)",
+        "Vase_Squat_Shard_08 (parent: Vase_Squat_Broken_Root)",
+        "Vase_Squat_Shard_09 (parent: Vase_Squat_Broken_Root)"
+      ],
+      "tris": {
+        "Vase_Squat_Intact": 6000,
+        "Vase_Squat_Shard_01": 844,
+        "Vase_Squat_Shard_02": 882,
+        "Vase_Squat_Shard_03": 862,
+        "Vase_Squat_Shard_04": 622,
+        "Vase_Squat_Shard_05": 736,
+        "Vase_Squat_Shard_06": 686,
+        "Vase_Squat_Shard_07": 746,
+        "Vase_Squat_Shard_08": 864,
+        "Vase_Squat_Shard_09": 2258
+      },
+      "size_m": [
+        0.223,
+        0.223,
+        0.234
+      ],
+      "bottom_z": 0.0,
+      "materials": [
+        "M_Vase_Squat"
+      ],
+      "issues": [],
+      "file_kb": 477
     }
   },
   "export_verify": {
@@ -561,6 +691,50 @@
         0.192,
         0.192,
         0.3
+      ],
+      "bottom_z": -0.0,
+      "actions": []
+    },
+    "Vase_Tall_Set.fbx": {
+      "objects": [
+        "Vase_Tall_Broken_Root",
+        "Vase_Tall_Intact",
+        "Vase_Tall_Shard_01",
+        "Vase_Tall_Shard_02",
+        "Vase_Tall_Shard_03",
+        "Vase_Tall_Shard_04",
+        "Vase_Tall_Shard_05",
+        "Vase_Tall_Shard_06",
+        "Vase_Tall_Shard_07",
+        "Vase_Tall_Shard_08",
+        "Vase_Tall_Shard_09"
+      ],
+      "size_m": [
+        0.173,
+        0.173,
+        0.366
+      ],
+      "bottom_z": -0.0,
+      "actions": []
+    },
+    "Vase_Squat_Set.fbx": {
+      "objects": [
+        "Vase_Squat_Broken_Root",
+        "Vase_Squat_Intact",
+        "Vase_Squat_Shard_01",
+        "Vase_Squat_Shard_02",
+        "Vase_Squat_Shard_03",
+        "Vase_Squat_Shard_04",
+        "Vase_Squat_Shard_05",
+        "Vase_Squat_Shard_06",
+        "Vase_Squat_Shard_07",
+        "Vase_Squat_Shard_08",
+        "Vase_Squat_Shard_09"
+      ],
+      "size_m": [
+        0.223,
+        0.223,
+        0.234
       ],
       "bottom_z": -0.0,
       "actions": []

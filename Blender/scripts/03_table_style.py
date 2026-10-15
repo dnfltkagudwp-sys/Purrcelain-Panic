@@ -12,7 +12,7 @@ import bpy
 import numpy as np
 
 sys.path.insert(0, os.path.dirname(__file__))
-from pp_common import (TABLE_SIZE, TEX_DIR, clean_mesh, decimate, load_stats, log, mesh_report,
+from pp_common import (TABLE_SIZE, TEX_DIR, hsv_to_rgb, rgb_to_hsv, clean_mesh, decimate, load_stats, log, mesh_report,
                        origin_to_bottom_center, save_stats, scale_to_height, world_bounds)
 
 TABLE_HEIGHT = 0.72          # VARCO 원본 비율 그대로 키웠을 때의 높이 (리사이즈 전 기준)
@@ -71,36 +71,6 @@ STYLE = {
     "TABLE_Main":  {"mat": "M_Table", "tex": "T_Table_BaseColor", "sat": 0.80, "val_target": 0.50, "val_lift": 0.00, "rough": 0.65},
     "Vase_Intact": {"mat": "M_Vase",  "tex": "T_Vase_BaseColor",  "sat": 1.10, "val_mul": 0.88, "val_lift": 0.14, "rough": 0.35},
 }
-
-
-def rgb_to_hsv(rgb):
-    r, g, b = rgb[..., 0], rgb[..., 1], rgb[..., 2]
-    mx, mn = rgb.max(-1), rgb.min(-1)
-    d = mx - mn
-    h = np.zeros_like(mx)
-    m = d > 1e-6
-    rm = m & (mx == r)
-    gm = m & (mx == g) & ~rm
-    bm = m & ~rm & ~gm
-    h[rm] = ((g - b)[rm] / d[rm]) % 6
-    h[gm] = (b - r)[gm] / d[gm] + 2
-    h[bm] = (r - g)[bm] / d[bm] + 4
-    h /= 6
-    s = np.where(mx > 1e-6, d / np.maximum(mx, 1e-6), 0)
-    return np.stack([h, s, mx], -1)
-
-
-def hsv_to_rgb(hsv):
-    h, s, v = hsv[..., 0] * 6, hsv[..., 1], hsv[..., 2]
-    i = np.floor(h).astype(int) % 6
-    f = h - np.floor(h)
-    p, q, tt = v * (1 - s), v * (1 - s * f), v * (1 - s * (1 - f))
-    choices = [(v, tt, p), (q, v, p), (p, v, tt), (p, q, v), (tt, p, v), (v, p, q)]
-    out = np.zeros(h.shape + (3,), dtype=np.float32)
-    for k, (a, b, c) in enumerate(choices):
-        sel = i == k
-        out[sel] = np.stack([a[sel], b[sel], c[sel]], -1)
-    return out
 
 
 os.makedirs(TEX_DIR, exist_ok=True)

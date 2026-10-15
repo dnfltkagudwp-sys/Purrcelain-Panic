@@ -5,6 +5,7 @@ import os
 
 import bmesh
 import bpy
+import numpy as np
 from mathutils import Matrix, Quaternion, Vector
 
 PROJECT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -208,3 +209,34 @@ def arm_space_rot(bone, axis_angles):
         r = Matrix.Rotation(math.radians(deg), 3, axis) @ r
     m = bone.bone.matrix_local.to_3x3().normalized()
     return (m.inverted() @ r @ m).to_quaternion()
+
+
+# ---------------------------------------------------------------- 색 변환 (텍스처 픽셀 보정용)
+def rgb_to_hsv(rgb):
+    r, g, b = rgb[..., 0], rgb[..., 1], rgb[..., 2]
+    mx, mn = rgb.max(-1), rgb.min(-1)
+    d = mx - mn
+    h = np.zeros_like(mx)
+    m = d > 1e-6
+    rm = m & (mx == r)
+    gm = m & (mx == g) & ~rm
+    bm = m & ~rm & ~gm
+    h[rm] = ((g - b)[rm] / d[rm]) % 6
+    h[gm] = (b - r)[gm] / d[gm] + 2
+    h[bm] = (r - g)[bm] / d[bm] + 4
+    h /= 6
+    s = np.where(mx > 1e-6, d / np.maximum(mx, 1e-6), 0)
+    return np.stack([h, s, mx], -1)
+
+
+def hsv_to_rgb(hsv):
+    h, s, v = hsv[..., 0] * 6, hsv[..., 1], hsv[..., 2]
+    i = np.floor(h).astype(int) % 6
+    f = h - np.floor(h)
+    p, q, tt = v * (1 - s), v * (1 - s * f), v * (1 - s * (1 - f))
+    choices = [(v, tt, p), (q, v, p), (p, v, tt), (p, q, v), (tt, p, v), (v, p, q)]
+    out = np.zeros(h.shape + (3,), dtype=np.float32)
+    for k, (a, b, c) in enumerate(choices):
+        sel = i == k
+        out[sel] = np.stack([a[sel], b[sel], c[sel]], -1)
+    return out

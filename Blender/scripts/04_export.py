@@ -33,6 +33,11 @@ ASSETS = {
                      sorted(o.name for o in bpy.data.objects if o.name.startswith("Vase_Shard_")),
                      "types": {'MESH', 'EMPTY'}, "anim": False},
 }
+for _v in ("Tall", "Squat"):   # 요청문 7: 도자기 변형체
+    ASSETS[f"Vase_{_v}_Set.fbx"] = {
+        "objects": [f"Vase_{_v}_Intact", f"Vase_{_v}_Broken_Root"] +
+                   sorted(o.name for o in bpy.data.objects if o.name.startswith(f"Vase_{_v}_Shard_")),
+        "types": {'MESH', 'EMPTY'}, "anim": False}
 
 stats = load_stats()
 report = {}

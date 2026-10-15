@@ -13,7 +13,7 @@ run() {
 }
 
 run 00_import --factory-startup
-for step in 01_cat 02_vase 03_table_style 04_export; do
+for step in 01_cat 02_vase 03_table_style 03b_vase_variants 04_export; do
   [[ "${step:0:2}" > "$LAST" ]] && break
   run "$step" Blender/Purrcelain_Work.blend
 done

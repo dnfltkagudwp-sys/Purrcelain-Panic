@@ -231,3 +231,29 @@ Unity에서 측정한 값 (정점 기준):
 | Unity | Humanoid Avatar 정상, `Push_L` Loop Time OFF, 0.50초 |
 
 키포즈 이미지: `Captures/process/P9_Push_L_키포즈.png`
+
+---
+
+## 요청문 7 — 도자기 변형체 2종 (추가 요청)
+
+> 그 도자기 같은 것만 나오면 너무 지루하니까, 색깔과 모양이 조금씩 다른 변형체를 2개만 추가해줘. 조금 늘리거나 누르는 식으로.
+
+| 항목 | Vase_Tall (늘림) | Vase_Squat (누름) |
+|---|---|---|
+| 변형 (X·Y·Z) | 0.90 · 0.90 · 1.22 | 1.16 · 1.16 · 0.78 |
+| 크기 | 0.17 × 0.17 × 0.37 m | 0.22 × 0.22 × 0.23 m |
+| 색 | 청자 느낌: 민트빛 유약 + 초록 무늬 | 분홍 느낌: 크림빛 유약 + 장미색 무늬 |
+| 머티리얼 / 텍스처 | `M_Vase_Tall` / `T_Vase_Tall_BaseColor.png` | `M_Vase_Squat` / `T_Vase_Squat_BaseColor.png` |
+| 구조 | `Vase_Tall_Intact`, `Vase_Tall_Broken_Root` > `Vase_Tall_Shard_01~09` | `Vase_Squat_Intact`, `Vase_Squat_Broken_Root` > `Vase_Squat_Shard_01~09` |
+| tris | 6,000 + 파편 8,500 | 6,000 + 파편 8,500 |
+| 검사 | 원본·파편 모두 구멍 0 · Non-Manifold 0 · 뒤집힌 면 0 | 같음 |
+| FBX | `Export/Vase_Tall_Set.fbx` | `Export/Vase_Squat_Set.fbx` |
+
+처리 방법 (`Blender/scripts/03b_vase_variants.py`):
+- 원본 도자기와 파편 9조각에 **같은 비율 변형**을 적용 → 파편이 변형된 도자기와 정확히 맞물리고, 깨지는 구조를 그대로 유지
+- 원점이 바닥 중앙이라 변형 후에도 바닥은 z=0, 파편 원점은 변형 후 부피 중심으로 다시 지정
+- 색은 원본 보정 텍스처에서 무늬(채도 있는 픽셀)는 색상만 옮기고, 흰 유약(채도 낮은 픽셀)은 살짝 물들임 → 원본과 같은 명암·광택(Roughness 0.35)을 유지하면서 색만 다르게
+- 고양이 주황과 겹치지 않도록 초록·분홍 계열 선택
+
+Unity: `Assets/Art/VaseVariants/`, 머티리얼 추출 후 Smoothness 0.65, Rotation 0 · Scale 1, 파편 9개 확인.
+확인 렌더: `Captures/process/P10_도자기_변형체.png`
