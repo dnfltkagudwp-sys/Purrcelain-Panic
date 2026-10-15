@@ -107,3 +107,7 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+
+# Blender 스크립트 실행 시 생기는 파이썬 캐시
+__pycache__/
+*.pyc
