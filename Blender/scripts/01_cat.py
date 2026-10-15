@@ -1,0 +1,225 @@
+"""01. 요청문 1 — 고양이 정리와 애니메이션 (CAT_Body / CAT_Rig / Idle_Lean / Push_R).
+
+blender --background Purrcelain_Work.blend --python 01_cat.py
+"""
+import os
+import sys
+
+import bpy
+from mathutils import Matrix, Vector
+
+sys.path.insert(0, os.path.dirname(__file__))
+from pp_common import (TABLE_SIZE, WORK_BLEND, action_fcurves, apply_transform, arm_space_rot, clean_mesh,
+                       decimate, load_stats, log, mesh_report, save_stats, select_only, world_bounds)
+
+TARGET_HEIGHT = 1.15      # m
+DECIMATE_RATIO = 0.4      # 50k -> 20k tris
+X, Y, Z = 'X', 'Y', 'Z'   # 아마추어 공간 축: +X = 고양이 왼쪽, -Y = 정면, +Z = 위
+
+body = bpy.data.objects["CAT_Body"]
+rig = bpy.data.objects["CAT_Rig"]
+stats = load_stats()
+cat = stats.setdefault("cat", {})
+cat["before"] = mesh_report(body)
+
+# ------------------------------------------------------------ 1. 메시 정리
+cat["clean"] = clean_mesh(body)
+decimate(body, DECIMATE_RATIO)
+body.data.shade_smooth()
+
+# ------------------------------------------------------------ 2. 크기 / 원점(발밑 중앙) / Scale 1
+lo, hi = world_bounds(body)
+factor = TARGET_HEIGHT / (hi.z - lo.z)
+feet = [rig.data.bones[n].head_local for n in ("LeftFoot", "RightFoot")]
+feet_center = Vector(((feet[0].x + feet[1].x) / 2, (feet[0].y + feet[1].y) / 2, lo.z))
+
+rig.matrix_world = Matrix.Scale(factor, 4) @ Matrix.Translation(-feet_center)
+bpy.context.view_layer.update()
+apply_transform(rig, body, location=True, rotation=True, scale=True)
+
+# ------------------------------------------------------------ 3. Weight 검사/정리 (Unity 4본 제한)
+deform = {b.name for b in rig.data.bones if b.use_deform}
+idx_ok = {g.index for g in body.vertex_groups if g.name in deform}
+unweighted = sum(1 for v in body.data.vertices
+                 if sum(g.weight for g in v.groups if g.group in idx_ok) < 1e-4)
+over4 = sum(1 for v in body.data.vertices if sum(1 for g in v.groups if g.weight > 1e-4) > 4)
+select_only(body)
+bpy.ops.object.vertex_group_clean(group_select_mode='ALL', limit=0.01)
+bpy.ops.object.vertex_group_limit_total(group_select_mode='ALL', limit=4)
+bpy.ops.object.vertex_group_normalize_all(group_select_mode='ALL', lock_active=False)
+cat["weights"] = {"unweighted_verts": unweighted, "verts_over_4_bones_before": over4,
+                  "fix": "clean<0.01, limit 4, normalize all"}
+
+# ------------------------------------------------------------ 4. 애니메이션
+scene = bpy.context.scene
+scene.render.fps = 30
+pb = rig.pose.bones
+for p in pb:
+    p.rotation_mode = 'QUATERNION'
+
+POSE_BONES = ["Spine", "Spine1", "Spine2", "Neck", "Head",
+              "LeftShoulder", "LeftArm", "LeftForeArm", "LeftHand",
+              "RightShoulder", "RightArm", "RightForeArm", "RightHand"]
+
+# 식탁에 기대는 기본 자세 (아마추어 공간 회전, 도). 부모 회전 위에 누적된다.
+BASE = {
+    "Spine":         [(X, 3)],
+    "Spine1":        [(X, 3)],
+    "Spine2":        [(X, 3)],
+    "Neck":          [(X, -3)],
+    "Head":          [(X, -5)],
+    "LeftShoulder":  [(Z, -6)],
+    "LeftArm":       [(Z, -70), (X, -28)],    # 앞으로 + 위로: 앞발을 상판 위에 올림
+    "LeftForeArm":   [(Z, -35), (X, 18)],
+    "LeftHand":      [(X, 8)],
+    "RightShoulder": [(Z, 6)],
+    "RightArm":      [(Z, 70), (X, -28)],
+    "RightForeArm":  [(Z, 35), (X, 18)],
+    "RightHand":     [(X, 8)],
+}
+
+
+def pose(overrides=None):
+    d = {k: list(v) for k, v in BASE.items()}
+    for k, v in (overrides or {}).items():
+        d[k] = v
+    return d
+
+
+def new_action(name):
+    act = bpy.data.actions.get(name)
+    if act:
+        bpy.data.actions.remove(act)
+    act = bpy.data.actions.new(name)
+    act.use_fake_user = True
+    rig.animation_data_create()
+    rig.animation_data.action = act
+    return act
+
+
+ARM_DELTA = 0.0   # 식탁 높이에 맞춘 팔 들어올림 보정(도, X축)
+
+
+def set_pose(rotations):
+    for name in POSE_BONES:
+        rots = rotations.get(name, [])
+        if name in ("LeftArm", "RightArm"):
+            rots = [(a, d + ARM_DELTA if a == X else d) for a, d in rots]
+        pb[name].rotation_quaternion = arm_space_rot(pb[name], rots)
+
+
+def key_pose(frame, rotations):
+    set_pose(rotations)
+    for name in POSE_BONES:
+        pb[name].keyframe_insert("rotation_quaternion", frame=frame, group=name)
+    root = pb["Root"]  # Root 고정: 위치/회전 0으로 키
+    root.location = (0, 0, 0)
+    root.rotation_quaternion = (1, 0, 0, 0)
+    root.keyframe_insert("location", frame=frame, group="Root")
+    root.keyframe_insert("rotation_quaternion", frame=frame, group="Root")
+
+
+def finish_action(act, start, end, cyclic):
+    act.use_frame_range = True
+    act.frame_start, act.frame_end = start, end
+    act.use_cyclic = cyclic
+    for fc in action_fcurves(act):
+        if cyclic:
+            fc.modifiers.new('CYCLES')
+        for kp in fc.keyframe_points:
+            kp.interpolation = 'BEZIER'
+            kp.handle_left_type = kp.handle_right_type = 'AUTO_CLAMPED'
+        fc.update()
+
+
+# --- 식탁 높이에 맞춰 팔 각도 보정: 기본 자세에서 손목이 상판 위 5cm에 오도록 이분 탐색
+def wrist_z():
+    bpy.context.view_layer.update()
+    return (rig.matrix_world @ pb["RightHand"].head).z
+
+
+target_z = TABLE_SIZE[2] + 0.05
+lo_d, hi_d = -40.0, 40.0          # X 음수 = 팔을 위로
+for _ in range(30):
+    ARM_DELTA = (lo_d + hi_d) / 2
+    set_pose(pose())
+    if wrist_z() > target_z:
+        lo_d = ARM_DELTA
+    else:
+        hi_d = ARM_DELTA
+cat["arm_pitch_delta_deg"] = round(ARM_DELTA, 2)
+cat["wrist_z_base_pose"] = round(wrist_z(), 3)
+
+# --- Idle_Lean: 30프레임 루프 (1 == 31), 작은 호흡 + 머리 움직임
+idle = new_action("Idle_Lean")
+breath_in = pose({
+    "Spine1": [(X, 1.5)], "Spine2": [(X, 1.5)],                    # 가슴이 살짝 펴짐
+    "LeftShoulder": [(Z, -6), (Y, 2)], "RightShoulder": [(Z, 6), (Y, -2)],
+})
+key_pose(1, pose({"Head": [(X, -5), (Z, -4)]}))
+key_pose(8, pose({"Head": [(X, -7), (Y, 3)]}))
+key_pose(16, {**breath_in, "Head": [(X, -6), (Z, 4)]})
+key_pose(24, pose({"Head": [(X, -4), (Y, -3)]}))
+key_pose(31, pose({"Head": [(X, -5), (Z, -4)]}))
+finish_action(idle, 1, 31, cyclic=True)
+
+# --- Push_R: 16프레임 1회 동작
+push = new_action("Push_R")
+key_pose(1, pose())
+key_pose(4, pose({                                                  # 준비: 오른팔 뒤로
+    "Spine2": [(X, 3), (Z, -8)],
+    "RightShoulder": [(Z, -14)],
+    "RightArm": [(Z, 42), (X, -24)],
+    "RightForeArm": [(Z, 72), (X, 16)],
+    "RightHand": [(X, 10)],
+}))
+key_pose(8, pose({                                                  # 접촉: 손을 앞으로 쭉
+    "Spine1": [(X, 10)],
+    "Spine2": [(X, 4), (Z, 14)],
+    "RightShoulder": [(Z, 24)],
+    "RightArm": [(Z, 88), (X, -30)],
+    "RightForeArm": [(Z, 4), (X, 6)],
+    "RightHand": [(X, -30)],
+}))
+key_pose(16, pose())
+finish_action(push, 1, 16, cyclic=False)
+# 준비 → 접촉 구간은 빠르게
+for fc in action_fcurves(push):
+    for kp in fc.keyframe_points:
+        if int(kp.co.x) == 4:
+            kp.interpolation = 'LINEAR'
+
+# 손이 닿는 범위 측정 (고양이 원점 기준, -Y = 앞)
+def paw_tip(frame, act):
+    rig.animation_data.action = act
+    scene.frame_set(frame)
+    return rig.matrix_world @ pb["RightHand"].tail
+
+
+cat["reach"] = {
+    "idle_paw_forward_m": round(-paw_tip(1, idle).y, 3),
+    "push_contact_forward_m": round(-paw_tip(8, push).y, 3),
+    "push_contact_x_m": round(paw_tip(8, push).x, 3),
+    "push_contact_z_m": round(paw_tip(8, push).z, 3),
+    "belly_front_m": round(-min(v.co.y for v in body.data.vertices if v.co.z < 0.6), 3),
+    "table_top_z_m": TABLE_SIZE[2],
+}
+
+rig.animation_data.action = idle
+scene.frame_start, scene.frame_end = 1, 31
+scene.frame_set(1)
+
+# ------------------------------------------------------------ 5. 결과 기록
+lo, hi = world_bounds(body)
+cat["after"] = mesh_report(body)
+cat["size_m"] = [round(v, 3) for v in (hi - lo)]
+cat["origin"] = "feet center (0,0,0)"
+cat["scale_factor"] = round(factor, 4)
+cat["shoulder_height_m"] = round((rig.matrix_world @ rig.data.bones["RightArm"].head_local).z, 3)
+cat["rig_scale"] = list(rig.scale)
+cat["body_scale"] = list(body.scale)
+cat["actions"] = {a.name: list(a.frame_range) for a in (idle, push)}
+save_stats(stats)
+bpy.ops.wm.save_mainfile()
+for k, v in cat.items():
+    log(f"{k}: {v}")
