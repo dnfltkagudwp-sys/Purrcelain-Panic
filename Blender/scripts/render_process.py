@@ -13,7 +13,7 @@ import numpy as np
 from mathutils import Matrix, Vector
 
 sys.path.insert(0, os.path.dirname(__file__))
-from pp_common import PROJECT, WORK_BLEND, tri_count, world_bounds
+from pp_common import CAT_STAND_Y, PROJECT, WORK_BLEND, tri_count, world_bounds
 
 OUT = os.path.join(PROJECT, "Captures", "process")
 PANEL_DIR = os.path.join(OUT, "_panels")
@@ -441,7 +441,7 @@ def pose_panel(action, frame, title, side=-1):
     scene = reset()
     eevee(scene)
     rig = bpy.data.objects["CAT_Rig"]
-    rig.location = (0, 0.55, 0)   # 배가 식탁 뒷면(y=0.30)에 닿는 위치
+    rig.location = (0, CAT_STAND_Y, 0)   # 배가 식탁 뒷면에 닿는 위치
     rig.animation_data.action = bpy.data.actions[action]
     scene.frame_set(frame)
     table = bpy.data.objects["TABLE_Main"]
@@ -462,3 +462,9 @@ montage([pose_panel("Idle_Lean", 1, "시작 (=31F)"), pose_panel("Idle_Lean", 8,
 montage([pose_panel("Push_L", 1, "기본 자세", 1), pose_panel("Push_L", 4, "준비: 왼팔 뒤로", 1),
          pose_panel("Push_L", 8, "접촉: 앞으로 뻗기", 1), pose_panel("Push_L", 16, "기본 자세로 복귀", 1)],
         "P9_Push_L_키포즈", cols=4)
+montage([pose_panel("Swipe_R", 1, "기본 자세"), pose_panel("Swipe_R", 4, "준비: 가슴 앞 왼쪽으로 당김"),
+         pose_panel("Swipe_R", 7, "타격: 앞-오른쪽으로 뻗음"), pose_panel("Swipe_R", 9, "마무리: 바깥으로 쓸고 나감")],
+        "P11_Swipe_R_키포즈", cols=4)
+montage([pose_panel("Swipe_L", 1, "기본 자세", 1), pose_panel("Swipe_L", 4, "준비: 가슴 앞 오른쪽으로 당김", 1),
+         pose_panel("Swipe_L", 7, "타격: 앞-왼쪽으로 뻗음", 1), pose_panel("Swipe_L", 9, "마무리: 바깥으로 쓸고 나감", 1)],
+        "P12_Swipe_L_키포즈", cols=4)

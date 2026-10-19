@@ -1,4 +1,4 @@
-"""01. 요청문 1 — 고양이 정리와 애니메이션 (CAT_Body / CAT_Rig / Idle_Lean / Push_R).
+"""01. 요청문 1 — 고양이 정리와 애니메이션 (CAT_Body / CAT_Rig / Idle_Lean / Push_R / Push_L / Swipe_R / Swipe_L).
 
 blender --background Purrcelain_Work.blend --python 01_cat.py
 """
@@ -195,7 +195,7 @@ def mirror_keys(keys):
     return out
 
 
-def make_push(name, keys):
+def make_push(name, keys, linear_from=(4,)):
     act = new_action(name)
     key_pose(1, pose())
     for frame, overrides in keys.items():
@@ -204,13 +204,44 @@ def make_push(name, keys):
     finish_action(act, 1, 16, cyclic=False)
     for fc in action_fcurves(act):                                  # 준비 → 접촉 구간은 빠르게
         for kp in fc.keyframe_points:
-            if int(kp.co.x) == 4:
+            if int(kp.co.x) in linear_from:
                 kp.interpolation = 'LINEAR'
     return act
 
 
 push = make_push("Push_R", PUSH_R_KEYS)
 push_l = make_push("Push_L", mirror_keys(PUSH_R_KEYS))   # 요청문 6: 왼손 밀기 (Push_R 좌우 반전)
+
+# --- Swipe_R: 16프레임 1회 동작 (요청문 9). 앞발을 가슴 앞 안쪽으로 당겼다가 앞-오른쪽으로 곡선을 그리며 쓸어낸다
+SWIPE_R_KEYS = {
+    4: {                                                            # 준비: 앞발을 가슴 앞 왼쪽으로 당기고 상체를 왼쪽으로 비틂
+        "Spine2": [(X, 3), (Z, 10)],
+        "RightShoulder": [(Z, 12)],
+        "RightArm": [(Z, 105), (X, -36)],
+        "RightForeArm": [(Z, 40), (X, 10)],
+        "RightHand": [(X, 0), (Z, 20)],
+    },
+    7: {                                                            # 타격: 앞-오른쪽으로 가장 멀리 뻗음
+        "Spine1": [(X, 10)],
+        "Spine2": [(X, 4), (Z, 3)],
+        "RightShoulder": [(Z, 18)],
+        "RightArm": [(Z, 78), (X, -35)],
+        "RightForeArm": [(Z, 4), (X, 7)],
+        "RightHand": [(X, -22), (Z, -5)],
+    },
+    9: {                                                            # 마무리: 바깥쪽으로 쓸고 나감, 상체는 오른쪽으로 풀림
+        "Spine1": [(X, 6)],
+        "Spine2": [(X, 3), (Z, -10)],
+        "RightShoulder": [(Z, 0)],
+        "RightArm": [(Z, 58), (X, -32)],
+        "RightForeArm": [(Z, 5), (X, 10)],
+        "RightHand": [(X, -10), (Z, -25)],
+    },
+}
+SWIPE_HIT_FRAMES = (5, 9)   # Unity 타격 구간(손 궤적 Sphere Cast)
+
+swipe = make_push("Swipe_R", SWIPE_R_KEYS, linear_from=(4, 7))
+swipe_l = make_push("Swipe_L", mirror_keys(SWIPE_R_KEYS), linear_from=(4, 7))
 
 
 # 손이 닿는 범위 측정 (고양이 원점 기준, -Y = 앞)
@@ -237,6 +268,31 @@ for f in (1, 4, 8, 16):
         "right_tip": [round(v, 3) for v in r], "left_tip": [round(v, 3) for v in l],
         "mirror_err_mm": round((Vector((-l.x, l.y, l.z)) - r).length * 1000, 1)}
 
+
+# Swipe_R 궤적: 프레임마다 손끝 위치(식탁 기준)와 앞발 메시의 가장 낮은 점이 상판보다 위인지
+def paw_lowest_z(side="Right"):
+    tip = rig.matrix_world @ pb[f"{side}Hand"].tail
+    mesh = body.evaluated_get(bpy.context.evaluated_depsgraph_get()).to_mesh()
+    z = min((body.matrix_world @ v.co).z for v in mesh.vertices
+            if ((body.matrix_world @ v.co) - tip).length < 0.08)
+    body.evaluated_get(bpy.context.evaluated_depsgraph_get()).to_mesh_clear()
+    return z
+
+
+belly = cat["reach"]["belly_front_m"]
+traj = {}
+for f in range(1, 17):
+    t = paw_tip(f, swipe)
+    traj[f"F{f}"] = {"x": round(t.x, 3), "into_table": round(-t.y - belly, 3), "z": round(t.z, 3),
+                     "paw_low_above_top_cm": round((paw_lowest_z() - TABLE_SIZE[2]) * 100, 1)}
+cat["swipe_r_trajectory"] = traj
+cat["swipe_hit_frames"] = list(SWIPE_HIT_FRAMES)
+cat["swipe_mirror_check"] = {}
+for f in (1, 4, 7, 9, 16):
+    r = paw_tip(f, swipe, "Right")
+    l = paw_tip(f, swipe_l, "Left")
+    cat["swipe_mirror_check"][f"F{f}"] = round((Vector((-l.x, l.y, l.z)) - r).length * 1000, 1)
+
 rig.animation_data.action = idle
 scene.frame_start, scene.frame_end = 1, 31
 scene.frame_set(1)
@@ -250,7 +306,7 @@ cat["scale_factor"] = round(factor, 4)
 cat["shoulder_height_m"] = round((rig.matrix_world @ rig.data.bones["RightArm"].head_local).z, 3)
 cat["rig_scale"] = list(rig.scale)
 cat["body_scale"] = list(body.scale)
-cat["actions"] = {a.name: list(a.frame_range) for a in (idle, push, push_l)}
+cat["actions"] = {a.name: list(a.frame_range) for a in (idle, push, push_l, swipe, swipe_l)}
 save_stats(stats)
 bpy.ops.wm.save_mainfile()
 for k, v in cat.items():

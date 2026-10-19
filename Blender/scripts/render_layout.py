@@ -3,10 +3,14 @@
 blender --background Purrcelain_Work.blend --python render_layout.py -- <out.png> [action] [frame] [explode]
 """
 import math
+import os
 import sys
 
 import bpy
 from mathutils import Vector
+
+sys.path.insert(0, os.path.dirname(__file__))
+from pp_common import CAT_STAND_Y
 
 args = sys.argv[sys.argv.index("--") + 1:]
 out = args[0]
@@ -25,12 +29,12 @@ world.node_tree.nodes["Background"].inputs["Color"].default_value = (0.82, 0.86,
 world.node_tree.nodes["Background"].inputs["Strength"].default_value = 0.9
 
 rig = bpy.data.objects["CAT_Rig"]
-rig.location = (0, 0.55, 0)   # 배가 식탁 뒷면(y=0.30)에 닿는 위치
+rig.location = (0, CAT_STAND_Y, 0)   # 배가 식탁 뒷면에 닿는 위치
 rig.animation_data.action = bpy.data.actions[action]
 scene.frame_set(frame)
 
 top = bpy.data.objects["TABLE_Main"].dimensions.z
-bpy.data.objects["Vase_Intact"].location = (0.12, 0.08, top)
+bpy.data.objects["Vase_Intact"].location = (0.12, 0.0, top)
 root = bpy.data.objects["Vase_Broken_Root"]
 root.location = (-0.45, 0.0, top)
 for s in root.children:

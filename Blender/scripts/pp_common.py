@@ -12,7 +12,8 @@ PROJECT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 WORK_BLEND = os.path.join(PROJECT, "Blender", "Purrcelain_Work.blend")
 STATS_JSON = os.path.join(PROJECT, "docs", "stats.json")
 TEX_DIR = os.path.join(PROJECT, "Blender", "Textures")
-TABLE_SIZE = (1.80, 0.60, 0.62)   # 식탁 폭(X) × 깊이(Y) × 높이(Z), m — 고양이 팔 각도도 이 높이에 맞춘다
+TABLE_SIZE = (1.80, 0.45, 0.62)   # 식탁 폭(X) × 깊이(Y) × 높이(Z), m — 고양이 팔 각도도 이 높이에 맞춘다
+CAT_STAND_Y = TABLE_SIZE[1] / 2 + 0.25   # 배(앞면 0.27 m)가 식탁 뒷면에 닿는 고양이 위치
 
 
 # ---------------------------------------------------------------- 기록

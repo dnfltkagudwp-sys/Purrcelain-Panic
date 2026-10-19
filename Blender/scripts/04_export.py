@@ -46,17 +46,17 @@ rig = bpy.data.objects["CAT_Rig"]
 
 # 애니메이션 평가 기준값(원본) — 재임포트 결과와 비교용
 reference = {}
-for act_name, frame in (("Idle_Lean", 16), ("Push_R", 8), ("Push_L", 8)):
+for act_name, frame in (("Idle_Lean", 16), ("Push_R", 8), ("Push_L", 8), ("Swipe_R", 7), ("Swipe_L", 7)):
     rig.animation_data.action = bpy.data.actions[act_name]
     scene.frame_set(frame)
-    hand = rig.matrix_world @ rig.pose.bones["LeftHand" if act_name == "Push_L" else "RightHand"].head
+    hand = rig.matrix_world @ rig.pose.bones["LeftHand" if act_name.endswith("_L") else "RightHand"].head
     reference[act_name] = (frame, hand.copy())
 
 # 출력 전 휴지 자세로 + 액션마다 NLA 스트립(스트립 이름 = Unity 클립 이름)
 rig.animation_data.action = None
 for tr in list(rig.animation_data.nla_tracks):
     rig.animation_data.nla_tracks.remove(tr)
-for act_name in ("Idle_Lean", "Push_R", "Push_L"):
+for act_name in ("Idle_Lean", "Push_R", "Push_L", "Swipe_R", "Swipe_L"):
     act = bpy.data.actions[act_name]
     tr = rig.animation_data.nla_tracks.new()
     tr.name = act_name
@@ -123,7 +123,7 @@ for fname in ASSETS:
             if hasattr(arm.animation_data, "action_slot") and act.slots:
                 arm.animation_data.action_slot = act.slots[0]
             bpy.context.scene.frame_set(frame)
-            hand = arm.matrix_world @ arm.pose.bones["LeftHand" if act_name == "Push_L" else "RightHand"].head
+            hand = arm.matrix_world @ arm.pose.bones["LeftHand" if act_name.endswith("_L") else "RightHand"].head
             v[f"{act_name}_hand_err_mm"] = round((hand - ref).length * 1000, 2)
             v[f"{act_name}_frames"] = list(act.frame_range)
     verify[fname] = v

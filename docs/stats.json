@@ -135,6 +135,115 @@
         "mirror_err_mm": 0.0
       }
     },
+    "swipe_r_trajectory": {
+      "F1": {
+        "x": -0.165,
+        "into_table": 0.197,
+        "z": 0.664,
+        "paw_low_above_top_cm": -1.8
+      },
+      "F2": {
+        "x": -0.059,
+        "into_table": 0.173,
+        "z": 0.676,
+        "paw_low_above_top_cm": -0.6
+      },
+      "F3": {
+        "x": 0.101,
+        "into_table": 0.059,
+        "z": 0.695,
+        "paw_low_above_top_cm": 0.8
+      },
+      "F4": {
+        "x": 0.156,
+        "into_table": -0.037,
+        "z": 0.708,
+        "paw_low_above_top_cm": 2.9
+      },
+      "F5": {
+        "x": 0.099,
+        "into_table": 0.106,
+        "z": 0.728,
+        "paw_low_above_top_cm": 4.3
+      },
+      "F6": {
+        "x": -0.015,
+        "into_table": 0.22,
+        "z": 0.72,
+        "paw_low_above_top_cm": 3.5
+      },
+      "F7": {
+        "x": -0.164,
+        "into_table": 0.281,
+        "z": 0.69,
+        "paw_low_above_top_cm": 0.0
+      },
+      "F8": {
+        "x": -0.382,
+        "into_table": 0.201,
+        "z": 0.709,
+        "paw_low_above_top_cm": 2.4
+      },
+      "F9": {
+        "x": -0.551,
+        "into_table": 0.022,
+        "z": 0.738,
+        "paw_low_above_top_cm": 5.2
+      },
+      "F10": {
+        "x": -0.531,
+        "into_table": 0.043,
+        "z": 0.741,
+        "paw_low_above_top_cm": 5.3
+      },
+      "F11": {
+        "x": -0.484,
+        "into_table": 0.091,
+        "z": 0.735,
+        "paw_low_above_top_cm": 4.6
+      },
+      "F12": {
+        "x": -0.412,
+        "into_table": 0.144,
+        "z": 0.721,
+        "paw_low_above_top_cm": 3.4
+      },
+      "F13": {
+        "x": -0.326,
+        "into_table": 0.182,
+        "z": 0.702,
+        "paw_low_above_top_cm": 1.8
+      },
+      "F14": {
+        "x": -0.245,
+        "into_table": 0.198,
+        "z": 0.684,
+        "paw_low_above_top_cm": 0.1
+      },
+      "F15": {
+        "x": -0.187,
+        "into_table": 0.199,
+        "z": 0.669,
+        "paw_low_above_top_cm": -1.2
+      },
+      "F16": {
+        "x": -0.165,
+        "into_table": 0.197,
+        "z": 0.664,
+        "paw_low_above_top_cm": -1.8
+      }
+    },
+    "swipe_hit_frames": [
+      5,
+      9
+    ],
+    "swipe_mirror_check": {
+      "F1": 0.0,
+      "F4": 0.0,
+      "F7": 0.0,
+      "F9": 0.0,
+      "F16": 0.0
+    },
     "after": {
       "tris": 20000,
       "seam_split_edges": 0,
@@ -172,6 +281,14 @@
         16.0
       ],
       "Push_L": [
+        1.0,
+        16.0
+      ],
+      "Swipe_R": [
+        1.0,
+        16.0
+      ],
+      "Swipe_L": [
         1.0,
         16.0
       ]
@@ -350,11 +467,11 @@
       "non_manifold_edges": 0,
       "flipped_faces": 0,
       "islands": 1,
-      "volume": 0.170861
+      "volume": 0.138276
     },
     "size_m": [
       1.8,
-      0.6,
+      0.45,
       0.62
     ],
     "origin": "bottom center (0,0,0)",
@@ -492,7 +609,7 @@
         "M_Cat"
       ],
       "issues": [],
-      "file_kb": 1266
+      "file_kb": 1564
     },
     "Table_Main.fbx": {
       "objects": [
@@ -503,7 +620,7 @@
       },
       "size_m": [
         1.8,
-        0.6,
+        0.45,
         0.62
       ],
       "bottom_z": 0.0001,
@@ -511,7 +628,7 @@
         "M_Table"
       ],
       "issues": [],
-      "file_kb": 199
+      "file_kb": 202
     },
     "Vase_Set.fbx": {
       "objects": [
@@ -643,7 +760,9 @@
       "actions": [
         "CAT_Rig|Idle_Lean",
         "CAT_Rig|Push_L",
-        "CAT_Rig|Push_R"
+        "CAT_Rig|Push_R",
+        "CAT_Rig|Swipe_L",
+        "CAT_Rig|Swipe_R"
       ],
       "Idle_Lean_hand_err_mm": 0.0,
       "Idle_Lean_frames": [
@@ -659,6 +778,16 @@
       "Push_L_frames": [
         1.0,
         16.0
+      ],
+      "Swipe_R_hand_err_mm": 0.0,
+      "Swipe_R_frames": [
+        1.0,
+        16.0
+      ],
+      "Swipe_L_hand_err_mm": 0.0,
+      "Swipe_L_frames": [
+        1.0,
+        16.0
       ]
     },
     "Table_Main.fbx": {
@@ -667,7 +796,7 @@
       ],
       "size_m": [
         1.8,
-        0.6,
+        0.45,
         0.62
       ],
       "bottom_z": 0.0001,
