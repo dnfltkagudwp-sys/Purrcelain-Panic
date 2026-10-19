@@ -61,8 +61,10 @@ namespace PurrcelainPanic
 
         void Update()
         {
-            paws.SetHeld(Paw.Left, leftPawAction.IsPressed());
-            paws.SetHeld(Paw.Right, rightPawAction.IsPressed());
+            // 멈춰 있는 동안(카드 선택 등)의 클릭은 앞발 입력으로 받지 않는다
+            bool paused = Time.timeScale <= 0f;
+            paws.SetHeld(Paw.Left, !paused && leftPawAction.IsPressed());
+            paws.SetHeld(Paw.Right, !paused && rightPawAction.IsPressed());
             Move(moveAction.ReadValue<float>(), Time.deltaTime);
         }
 

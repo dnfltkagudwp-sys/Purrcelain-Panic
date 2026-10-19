@@ -32,6 +32,10 @@ namespace PurrcelainPanic
 
         public static event Action<VaseBreak> Broken;
 
+        /// <summary>Domino Effect(6단계)가 더하는 연쇄 힘 전달률. 합계는 최대 95%.</summary>
+        public static float ChainTransferBonus { get; set; }
+        float ChainTransferRate => Mathf.Min(tuning.chainTransferRate + ChainTransferBonus, 0.95f);
+
         Rigidbody body;
         Vector3 lastVelocity;   // 이번 물리 스텝 직전 속도 = 충돌 직전 속도
         bool broken;
@@ -113,7 +117,7 @@ namespace PurrcelainPanic
             Vector3 travel = Vector3.ProjectOnPlane(lastVelocity, Vector3.up).normalized;
             Vector3 dir = (toOther * tuning.chainCenterWeight + travel * (1f - tuning.chainCenterWeight)).normalized;
 
-            other.ReceiveChain(SwipeId, ChainStep + 1, dir * speed * tuning.chainTransferRate);
+            other.ReceiveChain(SwipeId, ChainStep + 1, dir * speed * ChainTransferRate);
             body.linearVelocity = lastVelocity * tuning.chainCarrierKeep;
             HasTransferred = true;
         }

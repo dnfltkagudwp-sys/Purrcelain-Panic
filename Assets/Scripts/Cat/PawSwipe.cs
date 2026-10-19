@@ -60,6 +60,8 @@ namespace PurrcelainPanic
             public float cooldownLeft;
             public float layerWeight;
             public int swipeId;
+            public float releaseTime;
+            public float alternatingBoost;  // 이번 Swipe에 붙은 Alternating Paws 보너스
             public Vector3 prevTip;
             public bool hasPrevTip;
             public readonly HashSet<Rigidbody> hitBodies = new HashSet<Rigidbody>();
@@ -67,6 +69,8 @@ namespace PurrcelainPanic
 
         Animator animator;
         readonly PawState[] paws = new PawState[2];
+        PawState lastSwiper;
+        float clock;
         readonly RaycastHit[] hitBuffer = new RaycastHit[16];
         readonly Collider[] overlapBuffer = new Collider[16];
 
@@ -116,6 +120,18 @@ namespace PurrcelainPanic
         /// <summary>고양이가 좌우로 움직이는 중인지. 움직이는 동안 쉬는 앞발을 몸쪽으로 당겨 도자기와 겹치지 않게 한다.</summary>
         public bool Moving { get; set; }
 
+        // 능력 카드(6단계)가 바꾸는 값
+        public float ImpulseMultiplier { get; set; } = 1f;     // Iron Paw
+        public float CooldownMultiplier { get; set; } = 1f;    // Quick Swipe
+        public float CastRadiusMultiplier { get; set; } = 1f;  // Wide Arc
+        public float AlternatingBonus { get; set; }            // Alternating Paws: 교대로 맞히면 다음 Swipe 힘 추가 비율
+
+        /// <summary>마지막으로 놓은 Swipe가 교대 보너스를 받았는지.</summary>
+        public bool LastSwipeAlternating { get; private set; }
+
+        float Cooldown => tuning.cooldown * CooldownMultiplier;
+        float CastRadius => tuning.castRadius * CastRadiusMultiplier;
+
         /// <summary>진행 중인 충전을 취소한다 (일시정지, 레벨업 화면).</summary>
         public void CancelCharge()
         {
@@ -132,6 +148,7 @@ namespace PurrcelainPanic
         /// <summary>한 물리 스텝. Animator는 AnimatePhysics라 이 직후에 포즈를 계산한다.</summary>
         public void Step(float dt)
         {
+            clock += dt;
             foreach (var s in paws)
                 StepPaw(s, dt);
         }
@@ -202,13 +219,22 @@ namespace PurrcelainPanic
 
         void Release(PawState s)
         {
+            // Alternating Paws: 직전 Swipe가 반대 손이고, 무언가 맞혔고, 짧은 시간 안이면 이번 Swipe가 강해진다.
+            // 같은 손을 연속으로 쓰거나 빗나가면 보너스 없음
+            bool alternating = lastSwiper != null && lastSwiper != s && lastSwiper.hitBodies.Count > 0
+                && clock - lastSwiper.releaseTime <= tuning.alternatingWindow;
+            s.alternatingBoost = alternating ? AlternatingBonus : 0f;
+            LastSwipeAlternating = alternating;
+            lastSwiper = s;
+            s.releaseTime = clock;
+
             s.phase = Phase.Swiping;
             s.swipeId = nextSwipeId++;
             s.hitBodies.Clear();
-            s.cooldownLeft = tuning.cooldown;
+            s.cooldownLeft = Cooldown;
             // 준비 자세 이후 남은 동작이 쿨다운보다 길면 빨리 재생 (Quick Swipe)
             float remaining = (1f - s.clipTime) * ClipDuration;
-            s.playbackSpeed = Mathf.Max(1f, remaining / Mathf.Max(tuning.cooldown, 0.01f));
+            s.playbackSpeed = Mathf.Max(1f, remaining / Mathf.Max(Cooldown, 0.01f));
         }
 
         bool InHitWindow(float clipTime) =>
@@ -257,11 +283,11 @@ namespace PurrcelainPanic
             int count;
             if (dist > 1e-4f)
             {
-                count = Physics.SphereCastNonAlloc(from, tuning.castRadius, delta / dist, hitBuffer, dist, vaseMask, QueryTriggerInteraction.Ignore);
+                count = Physics.SphereCastNonAlloc(from, CastRadius, delta / dist, hitBuffer, dist, vaseMask, QueryTriggerInteraction.Ignore);
             }
             else
             {
-                int n = Physics.OverlapSphereNonAlloc(to, tuning.castRadius, overlapBuffer, vaseMask, QueryTriggerInteraction.Ignore);
+                int n = Physics.OverlapSphereNonAlloc(to, CastRadius, overlapBuffer, vaseMask, QueryTriggerInteraction.Ignore);
                 for (int i = 0; i < n; i++)
                     TryHit(s, overlapBuffer[i].attachedRigidbody, overlapBuffer[i].ClosestPoint(to), Vector3.zero);
                 return;
@@ -286,7 +312,7 @@ namespace PurrcelainPanic
             Vector3 hand = handDir.sqrMagnitude > 1e-8f ? handDir.normalized : forward;
             Vector3 dir = hand * tuning.handDirectionWeight + forward * (1f - tuning.handDirectionWeight);
             dir = dir.normalized + Vector3.up * tuning.upwardBias;
-            Vector3 impulse = dir.normalized * tuning.ImpulseFor(s.charge01);
+            Vector3 impulse = dir.normalized * tuning.ImpulseFor(s.charge01) * ImpulseMultiplier * (1f + s.alternatingBoost);
 
             body.AddForceAtPosition(impulse, point, ForceMode.Impulse);
             var hit = new PawHit

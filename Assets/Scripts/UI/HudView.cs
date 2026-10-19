@@ -10,6 +10,7 @@ namespace PurrcelainPanic
     public class HudView : MonoBehaviour
     {
         [SerializeField] ScoreComboManager score;
+        [SerializeField] ExperienceAbilityManager abilities;
         [SerializeField] Camera worldCamera;
         [SerializeField] float popupLifetime = 0.9f;
         [SerializeField] float popupRise = 80f;   // 기준 해상도 픽셀
@@ -36,6 +37,9 @@ namespace PurrcelainPanic
         Text scoreText;
         Text comboText;
         Image comboBar;
+        Text levelText;
+        Image xpBar;
+        Text slotsText;
         readonly List<Popup> popups = new List<Popup>();
 
         public int ActivePopupCount
@@ -61,9 +65,13 @@ namespace PurrcelainPanic
             scaler.matchWidthOrHeight = 0.5f;
             canvasRect = (RectTransform)transform;
 
-            scoreText = CreateText("Score", new Vector2(0, 1), new Vector2(40, -30), 56, TextAnchor.UpperLeft);
-            comboText = CreateText("Combo", new Vector2(1, 1), new Vector2(-40, -30), 48, TextAnchor.UpperRight);
-            comboBar = CreateBar(new Vector2(1, 1), new Vector2(-40, -100), new Vector2(260, 10));
+            CreatePanel(new Vector2(0, 1), new Vector2(24, -24), new Vector2(520, 160));   // 왼쪽 위 글씨 뒤 반투명 바탕
+            scoreText = CreateText("Score", new Vector2(0, 1), new Vector2(48, -40), 56, TextAnchor.UpperLeft);
+            comboText = CreateText("Combo", new Vector2(1, 1), new Vector2(-48, -40), 52, TextAnchor.UpperRight);
+            comboBar = CreateBar(new Vector2(1, 1), new Vector2(-48, -112), new Vector2(260, 10), Image.OriginHorizontal.Right, new Color(1f, 0.75f, 0.3f));
+            levelText = CreateText("Level", new Vector2(0, 1), new Vector2(48, -112), 40, TextAnchor.UpperLeft);
+            xpBar = CreateBar(new Vector2(0, 1), new Vector2(48, -164), new Vector2(460, 10), Image.OriginHorizontal.Left, new Color(0.5f, 0.85f, 1f));
+            slotsText = CreateText("Abilities", new Vector2(0, 0), new Vector2(48, 48), 32, TextAnchor.LowerLeft);
         }
 
         void OnEnable() => score.Scored += OnScored;
@@ -71,11 +79,20 @@ namespace PurrcelainPanic
 
         void Update()
         {
-            scoreText.text = $"SCORE  {score.Score:N0}";
+            scoreText.text = $"점수  {score.Score:N0}";
             bool combo = score.Combo > 1;
-            comboText.text = combo ? $"COMBO {score.Combo}   x{score.Multiplier:0.00}" : "";
+            comboText.text = combo ? $"콤보 {score.Combo}   x{score.Multiplier:0.00}" : "";
             comboBar.enabled = combo;
             comboBar.fillAmount = score.ComboWindow > 0f ? score.ComboTimeLeft / score.ComboWindow : 0f;
+            if (abilities != null)
+            {
+                levelText.text = $"레벨 {abilities.Level}   경험치 {abilities.Xp} / {abilities.XpToNext}";
+                xpBar.fillAmount = (float)abilities.Xp / abilities.XpToNext;
+                var sb = new System.Text.StringBuilder();
+                foreach (var id in abilities.Slots)
+                    sb.Append(AbilityCatalog.Name(id)).Append("  Lv ").Append(abilities.LevelOf(id)).AppendLine();
+                slotsText.text = sb.ToString();
+            }
 
             foreach (var p in popups)
                 if (p.active)
@@ -146,9 +163,22 @@ namespace PurrcelainPanic
             return text;
         }
 
-        Image CreateBar(Vector2 anchor, Vector2 position, Vector2 size)
+        void CreatePanel(Vector2 anchor, Vector2 position, Vector2 size)
         {
-            var go = new GameObject("ComboBar", typeof(RectTransform));
+            var go = new GameObject("Backing", typeof(RectTransform));
+            go.transform.SetParent(transform, false);
+            var rt = (RectTransform)go.transform;
+            rt.anchorMin = rt.anchorMax = rt.pivot = anchor;
+            rt.anchoredPosition = position;
+            rt.sizeDelta = size;
+            var img = go.AddComponent<Image>();
+            img.color = new Color(0f, 0f, 0f, 0.35f);
+            img.raycastTarget = false;
+        }
+
+        Image CreateBar(Vector2 anchor, Vector2 position, Vector2 size, Image.OriginHorizontal origin, Color color)
+        {
+            var go = new GameObject("Bar", typeof(RectTransform));
             go.transform.SetParent(transform, false);
             var rt = (RectTransform)go.transform;
             rt.anchorMin = rt.anchorMax = rt.pivot = anchor;
@@ -158,8 +188,8 @@ namespace PurrcelainPanic
             img.sprite = Sprite.Create(Texture2D.whiteTexture, new Rect(0, 0, 4, 4), Vector2.one * 0.5f);
             img.type = Image.Type.Filled;
             img.fillMethod = Image.FillMethod.Horizontal;
-            img.fillOrigin = (int)Image.OriginHorizontal.Right;
-            img.color = new Color(1f, 0.75f, 0.3f);
+            img.fillOrigin = (int)origin;
+            img.color = color;
             img.raycastTarget = false;
             return img;
         }

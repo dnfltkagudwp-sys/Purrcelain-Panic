@@ -54,10 +54,10 @@ namespace PurrcelainPanic
             transform.rotation = Quaternion.Euler(pitch, 0f, 0f);
 
             float x = transform.position.x;
-            if (Application.isPlaying)
-                x = Mathf.SmoothDamp(x, target.position.x, ref velocityX, followSmoothTime);
-            else
+            if (!Application.isPlaying)
                 x = target.position.x;
+            else if (Time.deltaTime > 0f)   // 멈춘 동안(카드 선택 등) SmoothDamp에 0을 넘기면 속도가 NaN이 될 수 있다
+                x = Mathf.SmoothDamp(x, target.position.x, ref velocityX, followSmoothTime);
 
             Vector3 position = new Vector3(x, height, target.position.z - backOffset);
 

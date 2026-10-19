@@ -112,3 +112,21 @@ MonoBehaviour:
     normal: 60
     fragile: 25
     collector: 15
+  xpRequiredBase: 4
+  xpRequiredStep: 3
+  maxAbilitySlots: 6
+  maxAbilityLevel: 5
+  cardsPerLevelUp: 3
+  emptyLevelUpBonus: 500
+  ironPawPerLevel: 0.12
+  dominoEffectPerLevel: 0.07
+  quickSwipePerLevel: 0.08
+  wideArcPerLevel: 0.08
+  alternatingPerLevel: 0.06
+  alternatingWindow: 1.5
+  comboKeeperPerLevel: 0.25
+  dominoDisplayPerLevel: 8
+  dominoDisplayLine3Level: 4
+  dominoDisplayLine3Weight: 10
+  fullSetPerLevel: 0.1
+  packedDisplayPerLevel: 0.15

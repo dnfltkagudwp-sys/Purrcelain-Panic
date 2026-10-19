@@ -95,6 +95,30 @@ namespace PurrcelainPanic
             new StageSettings { startTime = 120f, interval = 1.2f, columns = 11, single = 30, pair = 25, line2 = 25, cluster = 20, normal = 60, fragile = 25, collector = 15 },
         };
 
+        [Header("경험치·카드 (B-9)")]
+        public int xpRequiredBase = 4;              // 레벨업 요구량 = 4 + 3 × (현재 레벨 - 1)
+        public int xpRequiredStep = 3;
+        public int maxAbilitySlots = 6;
+        public int maxAbilityLevel = 5;
+        public int cardsPerLevelUp = 3;
+        public int emptyLevelUpBonus = 500;         // 고를 카드가 없을 때 대신 주는 점수
+
+        [Header("능력 수치 (B-10, 레벨당)")]
+        public float ironPawPerLevel = 0.12f;       // 밀기 힘 +12%
+        public float dominoEffectPerLevel = 0.07f;  // 힘 전달률 +7%p (최대 95%)
+        public float quickSwipePerLevel = 0.08f;    // 쿨다운 -8%
+        public float wideArcPerLevel = 0.08f;       // Sphere Cast 반경 +8%
+        public float alternatingPerLevel = 0.06f;   // 교대 Swipe 힘 +6%
+        public float alternatingWindow = 1.5f;      // 직전 Swipe(반대 손, 적중)부터 이 시간 안이어야 교대로 인정, 초
+        public float comboKeeperPerLevel = 0.25f;   // 콤보 유지시간 +0.25초
+        public float dominoDisplayPerLevel = 8f;    // 앞뒤 2개 패턴 가중치 +8
+        public int dominoDisplayLine3Level = 4;     // 이 레벨부터 앞뒤 3개 패턴 등장
+        public float dominoDisplayLine3Weight = 10f;
+        public float fullSetPerLevel = 0.10f;       // 한 개 더 놓을 확률 +10%
+        public float packedDisplayPerLevel = 0.15f; // 기존 도자기 옆 자리 우선 확률 +15%
+
+        public int XpRequired(int level) => xpRequiredBase + xpRequiredStep * (level - 1);
+
         public float SpeedScore(float impactSpeed) => Mathf.InverseLerp(impactSpeedMin, impactSpeedMax, impactSpeed);
         public float DistanceScore(float distance) => Mathf.Clamp01(distance / flightDistanceMax);
 

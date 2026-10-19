@@ -54,6 +54,9 @@ namespace PurrcelainPanic
             }
         }
 
+        /// <summary>콤보와 관계없는 보너스 점수 (고를 카드가 없는 레벨업 등).</summary>
+        public void AddBonus(int points) => Score += points;
+
         public float ComboMultiplier(int combo) =>
             Mathf.Min(1f + Mathf.Max(combo - 1, 0) * tuning.comboStep, tuning.comboMaxMultiplier);
 
