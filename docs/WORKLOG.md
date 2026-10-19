@@ -338,3 +338,30 @@ Unity: `Assets/Art/VaseVariants/`, 머티리얼 추출 후 Smoothness 0.65, Rota
 - 앞발이 직접 닿는 건 앞 2줄(가장자리에서 0.43 m까지). 뒷줄 막힘 방지: 뒷줄은 앞뒤 배열일 때만 생성. 멈춘 뒷줄 도자기를 밀어주는 구조 규칙은 미정 (3단계 이후 다시 정함)
 - Domino Display Lv 4+의 앞뒤 3개 직선 배열을 본문대로 되살림
 - 고양이 z = −(0.40 + 0.25), 카메라 72°로 낮춤 → 식탁 뒤 바닥 1.52 m까지 보임
+
+---
+
+## 2단계 — 양손 Swipe
+
+> 구조 규칙은 나중에 다시 잡아. 커밋하고 2단계 가자
+
+| 파일 | 내용 |
+|---|---|
+| `Assets/Scripts/Core/GameTuning.cs` + `Assets/Data/GameTuning.asset` | 이동·Swipe 수치 한 곳 관리 (기획서 부록 B-1, B-3) |
+| `Assets/Scripts/Cat/CatController.cs` | 새 Input System 액션(A/D·←/→, 마우스 왼쪽/오른쪽), X축 직접 이동(가속 0.08초, 충전 중 ×0.6, 범위 ±1.3 m) |
+| `Assets/Scripts/Cat/PawSwipe.cs` | 손별 상태(준비 → 충전 → Swipe), 충전 중 준비 자세(4F) 유지, 놓으면 쿨다운 0.6초, 타격 구간(5~9F) 손끝 경로 Sphere Cast, `AddForceAtPosition`(Impulse 1.5~4.5), `VaseHit` 이벤트 |
+| Animator | Base(Idle_Lean) + `PawL`·`PawR` 레이어(아바타 마스크: 팔 + 상체). 레이어 시간은 PawSwipe가 `Play(정규화 시간)`으로 직접 넘김 → 양손이 서로 끊지 않고 독립 |
+| 도자기 프리팹 | `Assets/Prefabs/Vases/Vase_Normal / Fragile / Collector` (질량 1.0 / 0.75 / 1.25, Continuous Dynamic). 충돌체는 높이 6단 × 10각 저폴리 convex 메시 (원본 6,000 tris는 convex 256면 제한 초과) |
+| 물리 | 레이어 Table·Vase·Shard·Floor, 물리 재질 `PM_Vase`·`PM_Table` (마찰 0.4/0.3, 탄성 0), 식탁 Mesh Collider |
+
+검증 — 편집 모드에서 `Physics.simulationMode = Script`로 0.02초씩 직접 진행 (씬 사본에서 실행 후 삭제):
+- 오른손 1초 충전 → 가운데 줄 도자기 Impulse 4.5, 식탁 먼 가장자리 너머 0.94 m에 낙하. 그 도자기에 부딪힌 뒷줄 도자기도 낙하 (물리 충돌만으로)
+- 왼손 짧은 탭 → 앞줄 도자기 Impulse 1.5, 식탁 위에서 0.3 m 밀림
+- 충전 중 앞발이 준비 자세에 멈춰 있는 것 확인
+
+문제와 해결:
+- 처음에 타격 0회: 판정 중심을 손목에서 0.06 m만 옮겨 손끝까지 닿지 않음 → 0.10 m
+- 손 본이 움직이지 않음: Animator Culling Mode가 `CullUpdateTransforms`라 보이지 않으면 본 갱신을 건너뜀 → `AlwaysAnimate`
+- Unity 6에서 물리 재질 확장자는 `.physicMaterial`
+
+남은 점: 손 이동 방향 60% + 전방 40% 규칙대로면, 휘두르기 후반에 맞은 바깥쪽 도자기는 옆으로 밀린다 (왼손 탭: 좌우 성분이 전방의 5배). 플레이해 보고 손 방향 비중을 조정할지 정한다.
