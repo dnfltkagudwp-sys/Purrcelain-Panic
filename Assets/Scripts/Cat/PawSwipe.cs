@@ -27,7 +27,9 @@ namespace PurrcelainPanic
     {
         const float ClipFps = 30f;
         static readonly string[] LayerNames = { "PawL", "PawR" };
+        static readonly string[] TuckLayerNames = { "TuckL", "TuckR" };
         static readonly int SwipeState = Animator.StringToHash("Swipe");
+        static readonly int TuckState = Animator.StringToHash("Tuck");
         static int nextSwipeId = 1;
 
         [SerializeField] GameTuning tuning;
@@ -41,6 +43,11 @@ namespace PurrcelainPanic
         {
             public Paw paw;
             public int layer;
+            public int tuckLayer;
+            public float tuckWeight;
+            public Vector3 restWrist;     // 쉬는 자세의 손목·손끝 (고양이 기준 좌표)
+            public Vector3 restTip;
+            public bool hasRest;
             public Transform hand;
             public Transform forearm;
             public Phase phase;
@@ -64,6 +71,9 @@ namespace PurrcelainPanic
         readonly Collider[] overlapBuffer = new Collider[16];
 
         public bool IsCharging => paws[0].phase == Phase.Charging || paws[1].phase == Phase.Charging;
+        /// <summary>앞발이 쉬는 자세로 완전히 돌아와 있는지 (충전·Swipe·레이어 복귀 중이 아님).</summary>
+        public bool IsIdle(Paw paw) => paws[(int)paw].phase == Phase.Ready && paws[(int)paw].layerWeight <= 0f;
+        public bool IsBusy => paws[0].phase != Phase.Ready || paws[1].phase != Phase.Ready;
         public float ChargeOf(Paw paw) => paws[(int)paw].charge01;
         public float CooldownLeft(Paw paw) => paws[(int)paw].cooldownLeft;
 
@@ -85,10 +95,12 @@ namespace PurrcelainPanic
             {
                 paw = paw,
                 layer = animator.GetLayerIndex(LayerNames[(int)paw]),
+                tuckLayer = animator.GetLayerIndex(TuckLayerNames[(int)paw]),
                 hand = animator.GetBoneTransform(hand),
                 forearm = animator.GetBoneTransform(forearm),
             };
             animator.SetLayerWeight(s.layer, 0f);
+            animator.SetLayerWeight(s.tuckLayer, 0f);
             return s;
         }
 
@@ -100,6 +112,9 @@ namespace PurrcelainPanic
                 s.pressedLatch = true;
             s.held = held;
         }
+
+        /// <summary>고양이가 좌우로 움직이는 중인지. 움직이는 동안 쉬는 앞발을 몸쪽으로 당겨 도자기와 겹치지 않게 한다.</summary>
+        public bool Moving { get; set; }
 
         /// <summary>진행 중인 충전을 취소한다 (일시정지, 레벨업 화면).</summary>
         public void CancelCharge()
@@ -173,6 +188,16 @@ namespace PurrcelainPanic
             animator.SetLayerWeight(s.layer, s.layerWeight);
             if (s.phase != Phase.Ready || s.layerWeight > 0f)
                 animator.Play(SwipeState, s.layer, s.clipTime);
+
+            // 앞발 당기기: 움직이는 중이거나, 쉬는 자리에 도자기가 있으면 몸쪽으로 당긴다.
+            // Swipe 레이어 아래(팔만 덮는 마스크)에 있어 Swipe가 시작되면 자연스럽게 덮인다
+            if (s.phase == Phase.Ready && s.layerWeight <= 0f && s.tuckWeight <= 0f)
+                RememberRestPose(s, tip);
+            float tuckTarget = s.phase == Phase.Ready && (Moving || RestSpotBlocked(s)) ? 1f : 0f;
+            s.tuckWeight = Mathf.MoveTowards(s.tuckWeight, tuckTarget, dt / Mathf.Max(tuning.tuckBlendTime, 0.001f));
+            animator.SetLayerWeight(s.tuckLayer, s.tuckWeight);
+            if (s.tuckWeight > 0f)
+                animator.Play(TuckState, s.tuckLayer, tuning.FrameToNormalized(tuning.tuckFrame));
         }
 
         void Release(PawState s)
@@ -189,6 +214,35 @@ namespace PurrcelainPanic
         bool InHitWindow(float clipTime) =>
             clipTime >= tuning.FrameToNormalized(tuning.hitStartFrame) &&
             clipTime <= tuning.FrameToNormalized(tuning.hitEndFrame) + 1e-4f;
+
+        void RememberRestPose(PawState s, Vector3 tip)
+        {
+            s.restWrist = transform.InverseTransformPoint(s.hand.position);
+            s.restTip = transform.InverseTransformPoint(tip);
+            s.hasRest = true;
+        }
+
+        /// <summary>쉬는 자세로 내려놓을 자리에 도자기가 있는지 (있으면 앞발을 당긴 채 둔다).</summary>
+        bool RestSpotBlocked(PawState s) =>
+            s.hasRest && Physics.CheckCapsule(transform.TransformPoint(s.restWrist), transform.TransformPoint(s.restTip),
+                tuning.pawRadius, vaseMask, QueryTriggerInteraction.Ignore);
+
+        /// <summary>위에서 봤을 때 점에서 가장 가까운 앞발(팔뚝 ~ 손끝)까지의 거리.</summary>
+        public float DistanceToPawsXZ(Vector3 p)
+        {
+            float best = float.MaxValue;
+            foreach (var s in paws)
+            {
+                Vector2 a = new Vector2(s.forearm.position.x, s.forearm.position.z);
+                Vector3 tip = PawTip(s);
+                Vector2 b = new Vector2(tip.x, tip.z);
+                Vector2 q = new Vector2(p.x, p.z);
+                Vector2 ab = b - a;
+                float t = Mathf.Clamp01(Vector2.Dot(q - a, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f));
+                best = Mathf.Min(best, Vector2.Distance(q, a + ab * t));
+            }
+            return best;
+        }
 
         Vector3 PawTip(PawState s)
         {

@@ -62,6 +62,11 @@ namespace PurrcelainPanic
         public void PhysicsStep()
         {
             lastVelocity = body.linearVelocity;
+            if (body.position.y < -1f)   // 바닥 밖으로 빠진 경우 (파괴 없이 정리)
+            {
+                gameObject.SetActive(false);
+                return;
+            }
             if (!exitedTable && TableSurface.Instance != null && !TableSurface.Instance.ContainsXZ(body.worldCenterOfMass))
             {
                 exitedTable = true;
@@ -139,6 +144,8 @@ namespace PurrcelainPanic
                 vase = this, kind = kind, point = point, impactSpeed = impactSpeed, flightDistance = distance,
                 swipeId = SwipeId, chainStep = ChainStep,
             });
+            body.linearVelocity = Vector3.zero;
+            body.angularVelocity = Vector3.zero;
             gameObject.SetActive(false);   // 생성 시스템(4단계)이 다시 꺼내 쓴다
         }
     }

@@ -29,3 +29,65 @@ MonoBehaviour:
   hitStartFrame: 5
   hitEndFrame: 9
   layerBlendTime: 0.06
+  tuckFrame: 4
+  tuckBlendTime: 0.1
+  tuckMoveSpeed: 0.05
+  chainTransferRate: 0.6
+  chainMinSpeed: 0.5
+  chainCarrierKeep: 0.4
+  chainCenterWeight: 0.7
+  impactSpeedMin: 3
+  impactSpeedMax: 6
+  flightDistanceMax: 1.5
+  shardPoolSize: 12
+  shardImpulseMin: 0.3
+  shardImpulseMax: 1
+  shardInheritVelocity: 0.3
+  shardLifetime: 4
+  shardShrinkTime: 0.5
+  columnCount: 11
+  columnSpacing: 0.25
+  rowOffsets:
+  - 0.19
+  - 0.44
+  - 0.69
+  spawnCheckRadius: 0.12
+  pawExclusionHalfWidth: 0.65
+  pawRadius: 0.06
+  movingVaseClearance: 0.45
+  movingVaseSpeed: 0.15
+  firstSpawnDelay: 0.5
+  stages:
+  - startTime: 0
+    interval: 2.5
+    columns: 5
+    single: 70
+    pair: 30
+    line2: 0
+    line3: 0
+    cluster: 0
+    normal: 100
+    fragile: 0
+    collector: 0
+  - startTime: 60
+    interval: 1.8
+    columns: 7
+    single: 45
+    pair: 30
+    line2: 25
+    line3: 0
+    cluster: 0
+    normal: 75
+    fragile: 25
+    collector: 0
+  - startTime: 120
+    interval: 1.2
+    columns: 11
+    single: 30
+    pair: 25
+    line2: 25
+    line3: 0
+    cluster: 20
+    normal: 60
+    fragile: 25
+    collector: 15

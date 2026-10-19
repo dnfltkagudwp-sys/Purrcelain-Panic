@@ -33,6 +33,11 @@ namespace PurrcelainPanic
         public int hitEndFrame = 9;
         public float layerBlendTime = 0.06f;        // 앞발 레이어가 켜지고 꺼지는 시간, 초
 
+        [Header("이동 중 앞발 당기기 (Push_L/R 클립의 준비 자세)")]
+        public int tuckFrame = 4;                   // Push 클립에서 팔을 몸쪽으로 당긴 프레임
+        public float tuckBlendTime = 0.1f;          // 당기고 내려놓는 데 걸리는 시간, 초
+        public float tuckMoveSpeed = 0.05f;         // 이 속도 이상 움직이면 앞발을 당김, m/s
+
         [Header("도자기 연쇄 (B-4)")]
         [Range(0f, 1f)] public float chainTransferRate = 0.6f;  // Domino Effect 기본값
         public float chainMinSpeed = 0.5f;          // 친 쪽 도자기가 이 속도 이상일 때만 전달, m/s
@@ -51,6 +56,25 @@ namespace PurrcelainPanic
         public float shardInheritVelocity = 0.3f;   // 도자기 속도 중 파편이 물려받는 비율
         public float shardLifetime = 4f;            // 초
         public float shardShrinkTime = 0.5f;        // 마지막에 줄어들며 사라지는 시간, 초
+
+        [Header("생성 격자 (B-1)")]
+        public int columnCount = 11;
+        public float columnSpacing = 0.25f;         // m, 가운데 열이 x = 0. 가장 굵은 Collector 지름 0.223 m보다 여유 있게
+        public float[] rowOffsets = { 0.19f, 0.44f, 0.69f };  // 고양이 쪽 가장자리에서, m. 마지막 줄 = 뒷줄 (간격 0.25 m). 첫 줄은 쉬는 앞발(약 0.2 m) 바로 앞
+        public float spawnCheckRadius = 0.12f;      // 이 반경 안에 도자기가 있으면 빈 자리가 아님, m
+        public float pawExclusionHalfWidth = 0.65f; // 앞발을 쓰는 중이면 고양이 중심 ±이 거리, 앞 2줄에는 생성 안 함 (휘두르는 폭 약 ±0.55 m)
+        public float pawRadius = 0.06f;             // 앞발 두께(반지름). 생성 금지 판정과 앞발 충돌체, m
+        public float movingVaseClearance = 0.45f;   // 이 거리 안에 움직이는 도자기가 있으면 그 칸에는 생성 안 함, m
+        public float movingVaseSpeed = 0.15f;       // 이 속도 이상이면 움직이는 도자기로 봄, m/s
+        public float firstSpawnDelay = 0.5f;        // 초
+
+        [Header("스테이지 (B-8)")]
+        public StageSettings[] stages =
+        {
+            new StageSettings { startTime = 0f, interval = 2.5f, columns = 5, single = 70, pair = 30, normal = 100 },
+            new StageSettings { startTime = 60f, interval = 1.8f, columns = 7, single = 45, pair = 30, line2 = 25, normal = 75, fragile = 25 },
+            new StageSettings { startTime = 120f, interval = 1.2f, columns = 11, single = 30, pair = 25, line2 = 25, cluster = 20, normal = 60, fragile = 25, collector = 15 },
+        };
 
         public float SpeedScore(float impactSpeed) => Mathf.InverseLerp(impactSpeedMin, impactSpeedMax, impactSpeed);
         public float DistanceScore(float distance) => Mathf.Clamp01(distance / flightDistanceMax);

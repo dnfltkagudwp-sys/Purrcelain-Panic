@@ -81,6 +81,7 @@ namespace PurrcelainPanic
                 velocityX = 0f;
             }
             transform.position = p;
+            paws.Moving = Mathf.Abs(velocityX) > tuning.tuckMoveSpeed;
         }
     }
 }

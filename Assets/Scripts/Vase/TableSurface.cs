@@ -11,6 +11,8 @@ namespace PurrcelainPanic
         Bounds bounds;
 
         public float TopY => bounds.max.y;
+        public float NearZ => bounds.min.z;    // 고양이 쪽 가장자리 (고양이는 -Z에서 +Z를 본다)
+        public float CenterX => bounds.center.x;
 
         void Awake()
         {
