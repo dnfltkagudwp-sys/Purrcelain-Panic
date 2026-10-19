@@ -304,3 +304,37 @@ Unity: `Assets/Art/VaseVariants/`, 머티리얼 추출 후 Smoothness 0.65, Rota
 | 앞발 최저점 − 상판 (cm) | −1.8 (기댄 자세) | 2.9 | 4.3 | 3.5 | 0.0 | 2.4 | 5.2 |
 
 키포즈 이미지: `Captures/process/P11_Swipe_R_키포즈.png`, `Captures/process/P12_Swipe_L_키포즈.png`
+
+---
+
+## 1단계 — 카메라와 그레이박스 (게임 구현 시작)
+
+> 응 커밋하고 1단계 가자
+
+| 항목 | 처리 |
+|---|---|
+| 씬 | `Assets/Scenes/Game.unity` (빌드 목록 첫 번째). 회색 바닥, 실제 식탁·고양이 에셋 사용 |
+| 좌표 | 고양이는 +Z를 바라봄 → 먼 쪽(파손 바닥) = +Z. 식탁 중심 원점, 고양이 z = −(0.225 + 0.25) |
+| 고양이 | `Assets/Animation/Cat_Player.controller` (기본 Idle_Lean, Swipe_L·Swipe_R 상태), Animator Update Mode = Fixed(AnimatePhysics), Root Motion 끔 |
+| 도자기 미리보기 | 2줄 × 7열 SpawnPoint 위치 중 8곳에 세 종류 배치 (`Vases_Preview`, 생성 시스템은 4단계에서 교체) |
+| 카메라 | `Assets/Scripts/Camera/CameraFollow.cs`: X축 SmoothDamp 추적, 흔들림 함수, 편집 모드에서도 위치 갱신 |
+
+카메라 구도 결정:
+- 기획서 구도(머리 뒤, 높이 1.55 m, 45°)로 찍어 보니 머리가 화면 하단 절반을 덮고 앞발과 가운데 앞줄 도자기를 가림
+- 원인: 머리 폭 0.51 m, 머리 앞끝이 z −0.09 m로 식탁 앞 가장자리(−0.225 m)를 넘어오고, Swipe 타격 순간 손목(z −0.075 m)이 바로 그 밑에 있음
+- 45° / 55° / 78° 세 구도 비교 (`Captures/unity/Camera_Option1~3_*.png`) → **머리 바로 위 75°** 선택: 높이 2.6 m, 고양이 원점보다 0.15 m 앞, FOV 50°
+- 결과: 머리는 화면 아래 중앙(정수리와 귀), 앞발 휘두르기와 두 줄 도자기 모두 보임, 식탁 뒤 바닥 1.63 m까지 보임
+
+확인 캡처: `Captures/unity/Greybox_Idle_Lean_F1.png`, `Greybox_Swipe_R_F7.png`, `Greybox_Swipe_L_F7.png`
+
+식탁 폭 조정 (추가 요청: "식탁 크기만 좀 조절하자. 너무 작네"):
+- 75° 카메라에서 1.8 m 식탁이 화면 가로의 44%뿐 → 폭만 **2.70 m**로 늘림 (깊이 0.45 m는 앞발 도달 범위 때문에 유지). 화면 가로 약 80%
+- `pp_common.TABLE_SIZE = (2.70, 0.45, 0.62)` → 파이프라인 재실행, 식탁만 바뀜
+- SpawnPoint 격자 11열 × 2줄(22개), 스테이지별 사용 열 5 / 7 / 11 (기획서 부록 B-1, B-8)
+- 캡처 참고: Unity 에디터가 백그라운드에 있으면 GPU Resident Drawer와 스키닝이 갱신되지 않아 캡처가 이전 상태로 나온다. 캡처할 때만 GPU Resident Drawer를 끄고, 고양이 포즈는 메시로 구워(BakeMesh) 찍음. 그림자 맵은 여전히 이전 배치로 남아 있음 (실행 중에는 문제없음)
+
+식탁 깊이 조정 (추가 요청: "깊이도 좀 깊어도 될 것 같아. 어차피 도자기끼리 부딪히면 밀려나잖아"):
+- 깊이 0.45 m → **0.80 m** (`TABLE_SIZE = (2.70, 0.80, 0.62)`), SpawnPoint 3줄(0.11 / 0.33 / 0.55 m) × 11열 = 33개
+- 앞발이 직접 닿는 건 앞 2줄(가장자리에서 0.43 m까지). 뒷줄 막힘 방지: 뒷줄은 앞뒤 배열일 때만 생성. 멈춘 뒷줄 도자기를 밀어주는 구조 규칙은 미정 (3단계 이후 다시 정함)
+- Domino Display Lv 4+의 앞뒤 3개 직선 배열을 본문대로 되살림
+- 고양이 z = −(0.40 + 0.25), 카메라 72°로 낮춤 → 식탁 뒤 바닥 1.52 m까지 보임

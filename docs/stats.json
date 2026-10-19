@@ -467,11 +467,11 @@
       "non_manifold_edges": 0,
       "flipped_faces": 0,
       "islands": 1,
-      "volume": 0.138276
+      "volume": 0.305771
     },
     "size_m": [
-      1.8,
-      0.45,
+      2.7,
+      0.8,
       0.62
     ],
     "origin": "bottom center (0,0,0)",
@@ -619,8 +619,8 @@
         "TABLE_Main": 5000
       },
       "size_m": [
-        1.8,
-        0.45,
+        2.7,
+        0.8,
         0.62
       ],
       "bottom_z": 0.0001,
@@ -628,7 +628,7 @@
         "M_Table"
       ],
       "issues": [],
-      "file_kb": 202
+      "file_kb": 199
     },
     "Vase_Set.fbx": {
       "objects": [
@@ -795,8 +795,8 @@
         "TABLE_Main"
       ],
       "size_m": [
-        1.8,
-        0.45,
+        2.7,
+        0.8,
         0.62
       ],
       "bottom_z": 0.0001,
