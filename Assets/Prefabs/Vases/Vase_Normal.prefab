@@ -71,6 +71,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3b0e09f92a5f486478afbdd1f41e5515, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6458635211050385315}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 3b0e09f92a5f486478afbdd1f41e5515, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1675783993392611783}
     - targetCorrespondingSourceObject: {fileID: 4871646552478460537, guid: 3b0e09f92a5f486478afbdd1f41e5515, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7971772096529051881}
@@ -107,6 +110,24 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 2
+--- !u!114 &1675783993392611783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1764300373995824345}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec82ecb22e94de84eaa31156166b3b8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PurrcelainPanic.BreakableVase
+  tuning: {fileID: 11400000, guid: a67a39ab242ff0c48afdc51e6e859542, type: 2}
+  kind: 0
+  shardPrefab: {fileID: 1523695838106471520, guid: e7476db2eeb1ae0449cfeddd96c5b964, type: 3}
+  floorMask:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!1 &6279975819757302769 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4871646552478460537, guid: 3b0e09f92a5f486478afbdd1f41e5515, type: 3}

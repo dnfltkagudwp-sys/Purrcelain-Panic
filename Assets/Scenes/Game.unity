@@ -244,6 +244,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 11a8bc63e661bfe489dc855f4326e0b9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 325864965}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 11a8bc63e661bfe489dc855f4326e0b9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 325864968}
   m_SourcePrefab: {fileID: 100100000, guid: 11a8bc63e661bfe489dc855f4326e0b9, type: 3}
 --- !u!4 &325864963 stripped
 Transform:
@@ -277,6 +280,67 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 9122591791773123165, guid: 11a8bc63e661bfe489dc855f4326e0b9, type: 3}
+--- !u!114 &325864968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 325864964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8263af722ca14624284d477f8b63f638, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PurrcelainPanic.TableSurface
+--- !u!1 &451199531
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 451199533}
+  - component: {fileID: 451199532}
+  m_Layer: 0
+  m_Name: ShardPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &451199532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 451199531}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 669c55ef03cb4a84bba0e75b1afaee16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PurrcelainPanic.ShardPool
+  tuning: {fileID: 11400000, guid: a67a39ab242ff0c48afdc51e6e859542, type: 2}
+  prefabs:
+  - {fileID: 1523695838106471520, guid: e7476db2eeb1ae0449cfeddd96c5b964, type: 3}
+  - {fileID: 551250469988206218, guid: cea35cbb8c498fb4fae30cc1a428ddda, type: 3}
+  - {fileID: 8647923320014345228, guid: c204768eb60b16441a8768b5c62b85cb, type: 3}
+--- !u!4 &451199533
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 451199531}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &567123566
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1258,3 +1322,4 @@ SceneRoots:
   - {fileID: 1249221225}
   - {fileID: 1130674694}
   - {fileID: 680360905}
+  - {fileID: 451199533}

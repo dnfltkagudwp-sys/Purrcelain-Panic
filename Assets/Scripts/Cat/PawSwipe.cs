@@ -235,10 +235,13 @@ namespace PurrcelainPanic
             Vector3 impulse = dir.normalized * tuning.ImpulseFor(s.charge01);
 
             body.AddForceAtPosition(impulse, point, ForceMode.Impulse);
-            VaseHit?.Invoke(new PawHit
+            var hit = new PawHit
             {
                 paw = s.paw, swipeId = s.swipeId, body = body, point = point, impulse = impulse, charge01 = s.charge01,
-            });
+            };
+            if (body.TryGetComponent(out BreakableVase vase))
+                vase.OnPawHit(hit);
+            VaseHit?.Invoke(hit);
         }
     }
 }

@@ -33,6 +33,28 @@ namespace PurrcelainPanic
         public int hitEndFrame = 9;
         public float layerBlendTime = 0.06f;        // 앞발 레이어가 켜지고 꺼지는 시간, 초
 
+        [Header("도자기 연쇄 (B-4)")]
+        [Range(0f, 1f)] public float chainTransferRate = 0.6f;  // Domino Effect 기본값
+        public float chainMinSpeed = 0.5f;          // 친 쪽 도자기가 이 속도 이상일 때만 전달, m/s
+        [Range(0f, 1f)] public float chainCarrierKeep = 0.4f;   // 전달 후 친 쪽에 남는 속도 비율
+        [Range(0f, 1f)] public float chainCenterWeight = 0.7f;  // 전달 방향: 두 중심을 잇는 방향 비중 (나머지는 친 쪽 진행 방향)
+
+        [Header("파괴 판정 (B-5)")]
+        public float impactSpeedMin = 3f;           // SpeedScore 0, m/s
+        public float impactSpeedMax = 6f;           // SpeedScore 1
+        public float flightDistanceMax = 1.5f;      // DistanceScore 1, m
+
+        [Header("파편 (B-6)")]
+        public int shardPoolSize = 12;              // 도자기 종류별 미리 만들어 둘 파편 세트 수
+        public float shardImpulseMin = 0.3f;        // 조각당, 약한 충돌
+        public float shardImpulseMax = 1.0f;        // 조각당, 강한 충돌 (등급 연출은 5단계)
+        public float shardInheritVelocity = 0.3f;   // 도자기 속도 중 파편이 물려받는 비율
+        public float shardLifetime = 4f;            // 초
+        public float shardShrinkTime = 0.5f;        // 마지막에 줄어들며 사라지는 시간, 초
+
+        public float SpeedScore(float impactSpeed) => Mathf.InverseLerp(impactSpeedMin, impactSpeedMax, impactSpeed);
+        public float DistanceScore(float distance) => Mathf.Clamp01(distance / flightDistanceMax);
+
         /// <summary>1-based 프레임 번호를 클립 정규화 시간(0~1)으로 바꾼다.</summary>
         public float FrameToNormalized(int frame) => (frame - 1f) / (clipLastFrame - 1f);
 

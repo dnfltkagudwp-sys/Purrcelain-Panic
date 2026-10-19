@@ -365,3 +365,28 @@ Unity: `Assets/Art/VaseVariants/`, 머티리얼 추출 후 Smoothness 0.65, Rota
 - Unity 6에서 물리 재질 확장자는 `.physicMaterial`
 
 남은 점: 손 이동 방향 60% + 전방 40% 규칙대로면, 휘두르기 후반에 맞은 바깥쪽 도자기는 옆으로 밀린다 (왼손 탭: 좌우 성분이 전방의 5배). 플레이해 보고 손 방향 비중을 조정할지 정한다.
+
+---
+
+## 3단계 — 도자기 물리와 파괴
+
+> 커밋하고 3단계 가자 나쁘지 않네
+
+| 파일 | 내용 |
+|---|---|
+| `Assets/Scripts/Vase/BreakableVase.cs` | Swipe 번호·연쇄 단계·받은 속도 기록, 연쇄 힘 전달(Swipe당 한 번), 식탁 이탈 지점 기록, 바닥에 처음 닿으면 파괴 + `Broken` 이벤트(충돌 속도·비행 거리·연쇄 단계) |
+| `Assets/Scripts/Vase/TableSurface.cs` | 상판 범위. 도자기 무게 중심이 처음 벗어난 XZ 위치 = 식탁 이탈 지점 |
+| `Assets/Scripts/Vase/ShardSet.cs`, `ShardPool.cs` | 9조각 파편 세트를 종류별 12개씩 미리 만들어 돌려 씀. 원래 모양대로 맞춘 뒤 바깥·위로 흩뿌리고 4초 뒤 0.5초 동안 줄어들며 반환 |
+| 프리팹 | `Assets/Prefabs/Shards/Shards_Normal / Fragile / Collector` (조각마다 Box Collider + Rigidbody, 질량 = 도자기 ÷ 9), 도자기 프리팹 3종에 `BreakableVase` |
+| 물리 | Shard 레이어는 Floor·Table과만 충돌 |
+| 연결 | `PawSwipe`가 맞힌 도자기에 `OnPawHit`로 Swipe 정보 전달 |
+
+연쇄 규칙 (기획서 B-4): 친 쪽 도자기가 0.5 m/s 이상이고 같은 Swipe에서 아직 전달하지 않았으면, 맞은 도자기 속도 = 충돌 직전 속도 × 전달률 0.6 (방향: 두 중심을 잇는 방향 70% + 친 쪽 진행 방향 30%), 친 쪽은 속도 ×0.4. 같은 Swipe 번호를 이미 가진 도자기에는 전달하지 않아 무한 연쇄 방지. 처음부터 붙어 있던 도자기를 위해 `OnCollisionStay`에서도 확인.
+
+검증 — Unity가 백그라운드에서는 Play 모드에서도 프레임이 멈춰 있어, Play 모드에 들어간 뒤 `Physics.simulationMode = Script`로 0.02초씩 직접 진행 (충돌 콜백은 실제와 같이 호출됨):
+- 오른손 정면 x = +0.24 m 열에 앞뒤 3개 배치, 오른손 1초 충전
+- 앞발이 앞줄·가운데 줄을 직접 맞힘 (각 4.5 m/s), 뒷줄은 연쇄 1단계로 2.58 m/s (= 4.3 × 0.6)
+- 세 개 모두 바닥에서 파괴: 충돌 속도 3.55 / 4.39 / 3.98 m/s, 비행 거리 0.28 / 0.84 / 0.76 m
+- 2초 뒤 파편 세트 3개(조각 27개)가 바닥에, 5초 뒤 모두 풀로 반환
+
+능력 없는 초기 상태에서는 최대 충전이어도 ImpactQuality가 0.5 안팎이라 PURRFECT(0.70 이상)가 거의 안 나온다. 결정: 의도대로 둔다. Iron Paw 등 능력이 쌓이며 PURRFECT가 나오기 시작하는 것이 성장감이다.
