@@ -39,9 +39,30 @@ MonoBehaviour:
   impactSpeedMin: 3
   impactSpeedMax: 6
   flightDistanceMax: 1.5
+  speedWeight: 0.65
+  smashThreshold: 0.35
+  purrfectThreshold: 0.7
+  fragilePurrfectThreshold: 0.6
+  gradeScore: 64000000a0000000fa000000i
+  gradeXp: 010000000200000003000000i
+  collectorScoreMultiplier: 2
+  collectorBonusXp: 2
+  comboWindow: 2
+  comboStep: 0.25
+  comboMaxMultiplier: 3
   shardPoolSize: 12
-  shardImpulseMin: 0.3
-  shardImpulseMax: 1
+  shardImpulse:
+  - 0.3
+  - 0.6
+  - 1
+  shakeAmplitude:
+  - 0
+  - 0.04
+  - 0.08
+  shakeDuration: 0.15
+  crumbCount: 000000000c0000001e000000i
+  dustCount: 040000000a00000010000000i
+  fragileCrumbMultiplier: 1.5
   shardInheritVelocity: 0.3
   shardLifetime: 4
   shardShrinkTime: 0.5

@@ -15,6 +15,7 @@ namespace PurrcelainPanic
         public float flightDistance;  // 식탁을 벗어난 지점부터 바닥 충돌 지점까지 수평 거리, m
         public int swipeId;           // 0이면 앞발과 관계없이 떨어짐
         public int chainStep;         // 0 = 앞발이 직접 맞힘, 1 = 그 도자기에 맞음, ...
+        public ImpactResult impact;   // 파괴 등급과 품질
     }
 
     /// <summary>
@@ -132,17 +133,15 @@ namespace PurrcelainPanic
             float impactSpeed = lastVelocity.magnitude;
             float distance = exitedTable ? Vector2.Distance(new Vector2(exitPoint.x, exitPoint.z), new Vector2(point.x, point.z)) : 0f;
 
+            var impact = ImpactEvaluator.Evaluate(tuning, kind, impactSpeed, distance);
             if (shardPrefab != null && ShardPool.Instance != null)
-            {
-                float strength = tuning.SpeedScore(impactSpeed);
                 ShardPool.Instance.Spawn(shardPrefab, transform.position, transform.rotation,
-                    lastVelocity * tuning.shardInheritVelocity, Mathf.Lerp(tuning.shardImpulseMin, tuning.shardImpulseMax, strength));
-            }
+                    lastVelocity * tuning.shardInheritVelocity, tuning.shardImpulse[(int)impact.grade]);
 
             Broken?.Invoke(new VaseBreak
             {
                 vase = this, kind = kind, point = point, impactSpeed = impactSpeed, flightDistance = distance,
-                swipeId = SwipeId, chainStep = ChainStep,
+                swipeId = SwipeId, chainStep = ChainStep, impact = impact,
             });
             body.linearVelocity = Vector3.zero;
             body.angularVelocity = Vector3.zero;

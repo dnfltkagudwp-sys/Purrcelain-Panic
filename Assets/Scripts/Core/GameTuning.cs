@@ -48,11 +48,30 @@ namespace PurrcelainPanic
         public float impactSpeedMin = 3f;           // SpeedScore 0, m/s
         public float impactSpeedMax = 6f;           // SpeedScore 1
         public float flightDistanceMax = 1.5f;      // DistanceScore 1, m
+        [Range(0f, 1f)] public float speedWeight = 0.65f;      // ImpactQuality = SpeedScore × 0.65 + DistanceScore × 0.35
+        public float smashThreshold = 0.35f;        // ImpactQuality 이상이면 SMASH
+        public float purrfectThreshold = 0.70f;     // 이상이면 PURRFECT
+        public float fragilePurrfectThreshold = 0.60f;  // Fragile Batch는 PURRFECT가 쉬움
+
+        [Header("점수·경험치 (B-5, B-7)")]
+        public int[] gradeScore = { 100, 160, 250 };     // CRACK, SMASH, PURRFECT
+        public int[] gradeXp = { 1, 2, 3 };
+        public float collectorScoreMultiplier = 2f;
+        public int collectorBonusXp = 2;
+        public float comboWindow = 2f;              // 마지막 파괴부터 이 시간 안에 다음 파괴가 오면 콤보 유지, 초
+        public float comboStep = 0.25f;             // 콤보 배율 = 1 + (콤보 단계 - 1) × 0.25
+        public float comboMaxMultiplier = 3f;
 
         [Header("파편 (B-6)")]
         public int shardPoolSize = 12;              // 도자기 종류별 미리 만들어 둘 파편 세트 수
-        public float shardImpulseMin = 0.3f;        // 조각당, 약한 충돌
-        public float shardImpulseMax = 1.0f;        // 조각당, 강한 충돌 (등급 연출은 5단계)
+        public float[] shardImpulse = { 0.3f, 0.6f, 1.0f };  // 조각당, CRACK / SMASH / PURRFECT
+
+        [Header("등급 연출")]
+        public float[] shakeAmplitude = { 0f, 0.04f, 0.08f };  // 카메라 흔들림, m
+        public float shakeDuration = 0.15f;
+        public int[] crumbCount = { 0, 12, 30 };    // 부스러기 입자 수 (Fragile은 ×1.5)
+        public int[] dustCount = { 4, 10, 16 };     // 먼지 입자 수
+        public float fragileCrumbMultiplier = 1.5f;
         public float shardInheritVelocity = 0.3f;   // 도자기 속도 중 파편이 물려받는 비율
         public float shardLifetime = 4f;            // 초
         public float shardShrinkTime = 0.5f;        // 마지막에 줄어들며 사라지는 시간, 초
