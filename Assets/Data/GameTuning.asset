@@ -24,6 +24,8 @@ MonoBehaviour:
   upwardBias: 0.15
   castRadius: 0.08
   pawTipOffset: 0.1
+  shockwaveRange: 0.18
+  shockwaveFalloff: 0.7
   clipLastFrame: 16
   windupFrame: 4
   hitStartFrame: 5
@@ -132,3 +134,4 @@ MonoBehaviour:
   dominoDisplayLine3Weight: 10
   fullSetPerLevel: 0.1
   packedDisplayPerLevel: 0.15
+  clawGustPerLevel: 0.05

@@ -25,6 +25,8 @@ namespace PurrcelainPanic
         [Header("Swipe 판정 (B-3)")]
         public float castRadius = 0.08f;            // m
         public float pawTipOffset = 0.10f;          // 손 본(손목)에서 판정 중심까지, m. 손목~손끝 약 0.12 m
+        public float shockwaveRange = 0.18f;        // 손끝에서 앞발이 향한 방향으로 더 닿는 거리 (발톱 바람), m
+        [Range(0f, 1f)] public float shockwaveFalloff = 0.7f;  // 충격파 끝에서의 힘 비율 (손끝은 100%)
 
         [Header("Swipe 클립 (Swipe_L/R, 30fps, 1~16프레임)")]
         public int clipLastFrame = 16;
@@ -120,6 +122,7 @@ namespace PurrcelainPanic
         public float dominoDisplayLine3Weight = 10f;
         public float fullSetPerLevel = 0.10f;       // 한 개 더 놓을 확률 +10%
         public float packedDisplayPerLevel = 0.15f; // 기존 도자기 옆 자리 우선 확률 +15%
+        public float clawGustPerLevel = 0.05f;      // 충격파 사거리 +0.05 m
 
         public int XpRequired(int level) => xpRequiredBase + xpRequiredStep * (level - 1);
 

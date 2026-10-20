@@ -34,6 +34,7 @@ namespace PurrcelainPanic
 
         [SerializeField] GameTuning tuning;
         [SerializeField] LayerMask vaseMask;
+        [SerializeField] ParticleSystem gust;   // 발톱 바람 줄기 (선택)
 
         public event Action<PawHit> VaseHit;
 
@@ -125,12 +126,14 @@ namespace PurrcelainPanic
         public float CooldownMultiplier { get; set; } = 1f;    // Quick Swipe
         public float CastRadiusMultiplier { get; set; } = 1f;  // Wide Arc
         public float AlternatingBonus { get; set; }            // Alternating Paws: 교대로 맞히면 다음 Swipe 힘 추가 비율
+        public float ShockwaveRangeBonus { get; set; }         // 발톱 바람: 충격파 사거리 추가, m
 
         /// <summary>마지막으로 놓은 Swipe가 교대 보너스를 받았는지.</summary>
         public bool LastSwipeAlternating { get; private set; }
 
         float Cooldown => tuning.cooldown * CooldownMultiplier;
         float CastRadius => tuning.castRadius * CastRadiusMultiplier;
+        float ShockwaveRange => tuning.shockwaveRange + ShockwaveRangeBonus;
 
         /// <summary>진행 중인 충전을 취소한다 (일시정지, 레벨업 화면).</summary>
         public void CancelCharge()
@@ -290,6 +293,7 @@ namespace PurrcelainPanic
                 int n = Physics.OverlapSphereNonAlloc(to, CastRadius, overlapBuffer, vaseMask, QueryTriggerInteraction.Ignore);
                 for (int i = 0; i < n; i++)
                     TryHit(s, overlapBuffer[i].attachedRigidbody, overlapBuffer[i].ClosestPoint(to), Vector3.zero);
+                Shockwave(s, to, Vector3.zero);
                 return;
             }
 
@@ -301,9 +305,48 @@ namespace PurrcelainPanic
                 Vector3 point = h.distance <= 0f && h.point == Vector3.zero ? h.collider.ClosestPoint(from) : h.point;
                 TryHit(s, h.rigidbody, point, handDir);
             }
+            Shockwave(s, to, handDir);
         }
 
-        void TryHit(PawState s, Rigidbody body, Vector3 point, Vector3 handDir)
+        /// <summary>
+        /// 발톱 바람: 손끝에서 앞발이 향한 방향으로 판정을 더 뻗는다. 팔이 짧아 닿지 않는 도자기를 위한 판정으로,
+        /// 처음 닿은 도자기 하나에서 막히고, 멀수록 힘이 약해진다.
+        /// </summary>
+        void Shockwave(PawState s, Vector3 tip, Vector3 handDir)
+        {
+            float range = ShockwaveRange;
+            Vector3 dir = Vector3.ProjectOnPlane(tip - s.forearm.position, Vector3.up);
+            if (range <= 0f || dir.sqrMagnitude < 1e-6f)
+                return;
+            dir.Normalize();
+            EmitGust(tip, dir, range);
+
+            int n = Physics.SphereCastNonAlloc(tip, CastRadius, dir, hitBuffer, range, vaseMask, QueryTriggerInteraction.Ignore);
+            int nearest = -1;
+            for (int i = 0; i < n; i++)
+                if (hitBuffer[i].rigidbody != null && (nearest < 0 || hitBuffer[i].distance < hitBuffer[nearest].distance))
+                    nearest = i;
+            if (nearest < 0)
+                return;
+            var h = hitBuffer[nearest];
+            Vector3 point = h.distance <= 0f && h.point == Vector3.zero ? h.collider.ClosestPoint(tip) : h.point;
+            TryHit(s, h.rigidbody, point, handDir, Mathf.Lerp(1f, tuning.shockwaveFalloff, h.distance / range));
+        }
+
+        void EmitGust(Vector3 tip, Vector3 dir, float range)
+        {
+            if (gust == null)
+                return;
+            var p = new ParticleSystem.EmitParams { applyShapeToPosition = false };
+            for (int i = 0; i < 3; i++)
+            {
+                p.position = tip + dir * (range * (i + 0.5f) / 3f) + Vector3.up * 0.02f;
+                p.velocity = dir * 1.5f;
+                gust.Emit(p, 1);
+            }
+        }
+
+        void TryHit(PawState s, Rigidbody body, Vector3 point, Vector3 handDir, float forceScale = 1f)
         {
             if (body == null || !s.hitBodies.Add(body))
                 return;
@@ -312,7 +355,7 @@ namespace PurrcelainPanic
             Vector3 hand = handDir.sqrMagnitude > 1e-8f ? handDir.normalized : forward;
             Vector3 dir = hand * tuning.handDirectionWeight + forward * (1f - tuning.handDirectionWeight);
             dir = dir.normalized + Vector3.up * tuning.upwardBias;
-            Vector3 impulse = dir.normalized * tuning.ImpulseFor(s.charge01) * ImpulseMultiplier * (1f + s.alternatingBoost);
+            Vector3 impulse = dir.normalized * tuning.ImpulseFor(s.charge01) * ImpulseMultiplier * (1f + s.alternatingBoost) * forceScale;
 
             body.AddForceAtPosition(impulse, point, ForceMode.Impulse);
             var hit = new PawHit

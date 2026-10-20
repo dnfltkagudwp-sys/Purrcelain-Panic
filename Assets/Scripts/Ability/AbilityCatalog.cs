@@ -1,6 +1,6 @@
 namespace PurrcelainPanic
 {
-    /// <summary>능력 카드 9종 (기획서 18장). 모두 패시브이며 액티브 능력은 없다.</summary>
+    /// <summary>능력 카드 10종 (기획서 18장 9종 + 발톱 바람). 모두 패시브이며 액티브 능력은 없다.</summary>
     public enum AbilityId
     {
         IronPaw,
@@ -12,6 +12,7 @@ namespace PurrcelainPanic
         DominoDisplay,
         FullSet,
         PackedDisplay,
+        ClawGust,
     }
 
     /// <summary>카드에 보여 줄 이름과 레벨별 설명. 기획서의 영문 이름은 작은 부제로 함께 보여 준다.</summary>
@@ -29,7 +30,8 @@ namespace PurrcelainPanic
             AbilityId.ComboKeeper => "콤보 유지",
             AbilityId.DominoDisplay => "도미노 진열",
             AbilityId.FullSet => "풀 세트",
-            _ => "빽빽한 진열",
+            AbilityId.PackedDisplay => "빽빽한 진열",
+            _ => "발톱 바람",
         };
 
         public static string EnglishName(AbilityId id) => id switch
@@ -42,7 +44,8 @@ namespace PurrcelainPanic
             AbilityId.ComboKeeper => "Combo Keeper",
             AbilityId.DominoDisplay => "Domino Display",
             AbilityId.FullSet => "Full Set",
-            _ => "Packed Display",
+            AbilityId.PackedDisplay => "Packed Display",
+            _ => "Claw Gust",
         };
 
         /// <summary>그 레벨이 됐을 때의 효과 (누적값).</summary>
@@ -58,7 +61,8 @@ namespace PurrcelainPanic
                 ? $"앞뒤로 줄 선 도자기가 더 자주 나옴\n3개짜리 줄도 등장"
                 : $"앞뒤로 줄 선 도자기가 더 자주 나옴",
             AbilityId.FullSet => $"{Pct(t.fullSetPerLevel * level)} 확률로 도자기가 1개 더 나옴",
-            _ => $"{Pct(t.packedDisplayPerLevel * level)} 확률로 다른 도자기 옆에 나옴",
+            AbilityId.PackedDisplay => $"{Pct(t.packedDisplayPerLevel * level)} 확률로 다른 도자기 옆에 나옴",
+            _ => $"발톱 바람이 손끝보다 {(t.shockwaveRange + t.clawGustPerLevel * level) * 100f:0}cm 더 멀리 닿음\n(기본 {t.shockwaveRange * 100f:0}cm)",
         };
 
         static string Pct(float v) => $"{v * 100f:0}%";

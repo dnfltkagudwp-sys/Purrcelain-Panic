@@ -142,6 +142,7 @@ namespace PurrcelainPanic
             paws.CooldownMultiplier = 1f - tuning.quickSwipePerLevel * Lv(AbilityId.QuickSwipe);
             paws.CastRadiusMultiplier = 1f + tuning.wideArcPerLevel * Lv(AbilityId.WideArc);
             paws.AlternatingBonus = tuning.alternatingPerLevel * Lv(AbilityId.AlternatingPaws);
+            paws.ShockwaveRangeBonus = tuning.clawGustPerLevel * Lv(AbilityId.ClawGust);
             score.ComboWindowBonus = tuning.comboKeeperPerLevel * Lv(AbilityId.ComboKeeper);
 
             int display = Lv(AbilityId.DominoDisplay);
