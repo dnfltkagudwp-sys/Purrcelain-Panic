@@ -2610,7 +2610,6 @@ GameObject:
   - component: {fileID: 592726777}
   - component: {fileID: 592726778}
   - component: {fileID: 592726779}
-  - component: {fileID: 592726780}
   m_Layer: 0
   m_Name: Game
   m_TagString: Untagged
@@ -2709,22 +2708,6 @@ MonoBehaviour:
   tuning: {fileID: 11400000, guid: a67a39ab242ff0c48afdc51e6e859542, type: 2}
   paws: {fileID: 1130674698}
   abilities: {fileID: 592726778}
---- !u!114 &592726780
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 592726773}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b354c932ddb37f74b83b45ba3417070f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PurrcelainPanic.SlideProbe
-  abilities: {fileID: 592726778}
-  cat: {fileID: 1130674697}
-  cameraTransform: {fileID: 1866970455}
-  interval: 0.25
 --- !u!1 &740801962
 GameObject:
   m_ObjectHideFlags: 0

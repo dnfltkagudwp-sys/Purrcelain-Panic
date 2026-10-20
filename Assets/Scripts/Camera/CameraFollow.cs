@@ -27,6 +27,8 @@ namespace PurrcelainPanic
 
         Camera cam;
         float velocityX;
+        float followX;          // 흔들림을 뺀 추적 위치. transform에서 다시 읽으면 흔들림이 다음 프레임에 쌓인다
+        bool hasFollowX;
         float shakeAmplitude;
         float shakeTimeLeft;
         float shakeDuration;
@@ -53,15 +55,18 @@ namespace PurrcelainPanic
             cam.fieldOfView = fieldOfView;
             transform.rotation = Quaternion.Euler(pitch, 0f, 0f);
 
-            float x = transform.position.x;
-            if (!Application.isPlaying)
-                x = target.position.x;
+            if (!Application.isPlaying || !hasFollowX)
+            {
+                followX = target.position.x;
+                hasFollowX = Application.isPlaying;
+            }
             else if (Time.deltaTime > 0f)   // 멈춘 동안(카드 선택 등) SmoothDamp에 0을 넘기면 속도가 NaN이 될 수 있다
-                x = Mathf.SmoothDamp(x, target.position.x, ref velocityX, followSmoothTime);
+                followX = Mathf.SmoothDamp(followX, target.position.x, ref velocityX, followSmoothTime);
 
-            Vector3 position = new Vector3(x, height, target.position.z - backOffset);
+            Vector3 position = new Vector3(followX, height, target.position.z - backOffset);
 
-            if (Application.isPlaying && shakeTimeLeft > 0f)
+            // 멈춘 동안에는 흔들지 않는다 (시간이 흐르지 않아 흔들림이 끝나지 않는다)
+            if (Application.isPlaying && shakeTimeLeft > 0f && Time.deltaTime > 0f)
             {
                 shakeTimeLeft -= Time.deltaTime;
                 float fade = Mathf.Clamp01(shakeTimeLeft / shakeDuration);
