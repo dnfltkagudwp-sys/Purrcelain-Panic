@@ -533,3 +533,12 @@ Unity: `Assets/Art/VaseVariants/`, 머티리얼 추출 후 Smoothness 0.65, Rota
 - 공통: 점수가 0부터 올라감, 콤보 2 이상이면 배율 태그(배율이 높을수록 빨간색), 수집용 도자기는 "수집품 x2" 태그, 가까이 떠 있는 팝업이 있으면 그 높이만큼 위로 쌓음
 - HUD 오른쪽 위 콤보 글씨: 콤보가 오를 때마다 툭 튀고, 배율이 높을수록 붉어짐
 - 확인 (Play 모드, 등급 3종 + PURRFECT 옆 SMASH를 동시에 띄우고 0.1 / 0.3 / 0.7초 캡처): 불꽃·고리·점수 올라감 정상, 겹친 두 팝업은 위아래로 나뉨. 처음 쌓는 간격(60 px 고정)은 PURRFECT 위에서 겹쳐 팝업 높이 기준으로 바꿈
+
+전용 폰트 (부록 C):
+- 글꼴: Jua (Google Fonts, SIL OFL 1.1) — `Assets/Fonts/Jua/Jua-Regular.ttf`, 라이선스 원문 `OFL.txt` 함께 보관 (배포 시 포함)
+- 렌더링: 내장 Legacy Text → TextMesh Pro. TMP 기본 리소스(`Assets/TextMesh Pro`) 가져옴, TMP Settings 기본 글꼴 = `Jua SDF`
+- `Jua SDF` 글꼴 에셋: SDF 90 pt, 여백 9, 2048 아틀라스, 동적(여러 장 허용). 코드 문자열에 쓰인 한글 160자 + ASCII를 미리 넣어 둠. Jua에 없는 기호(· — × …)는 LiberationSans SDF로 대체
+- 테두리·그림자는 글꼴 재질에 한 번만 설정 (테두리 0.22 진갈색, 그림자 오른쪽 아래 반투명) → 글씨마다 붙이던 `Outline` 컴포넌트 제거
+- 공통 생성 함수 `UiText.Add` 추가, HUD·점수 팝업·카드·게임 화면 4개 모두 TMP로 교체
+- 카드 화면이 떠 있는 동안 스테이지 배너 숨김 (카드 제목 위에 겹치던 문제)
+- 확인 (Play 모드 캡처): HUD, 점수 팝업, 카드 3장, 결과 화면 모두 Jua로 표시, 빠진 글자 경고 없음

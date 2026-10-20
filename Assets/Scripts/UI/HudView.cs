@@ -1,10 +1,11 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace PurrcelainPanic
 {
     /// <summary>
-    /// 점수·콤보·레벨 HUD (깨진 자리 팝업은 ScorePopupView). 그레이박스 단계라 UI를 코드로 만든다 (기본 내장 폰트).
+    /// 점수·콤보·레벨 HUD (깨진 자리 팝업은 ScorePopupView). 그레이박스 단계라 UI를 코드로 만든다.
     /// </summary>
     public class HudView : MonoBehaviour
     {
@@ -15,19 +16,17 @@ namespace PurrcelainPanic
 
         static readonly Color ComboHot = new Color(1f, 0.3f, 0.35f);
 
-        Font font;
         int lastCombo;
         float comboPunch;
-        Text scoreText;
-        Text comboText;
+        TMP_Text scoreText;
+        TMP_Text comboText;
         Image comboBar;
-        Text levelText;
+        TMP_Text levelText;
         Image xpBar;
-        Text slotsText;
+        TMP_Text slotsText;
 
         void Awake()
         {
-            font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             var canvas = gameObject.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             var scaler = gameObject.AddComponent<CanvasScaler>();
@@ -36,12 +35,12 @@ namespace PurrcelainPanic
             scaler.matchWidthOrHeight = 0.5f;
 
             CreatePanel(new Vector2(0, 1), new Vector2(24, -24), new Vector2(520, 160));   // 왼쪽 위 글씨 뒤 반투명 바탕
-            scoreText = CreateText("Score", new Vector2(0, 1), new Vector2(48, -40), 56, TextAnchor.UpperLeft);
-            comboText = CreateText("Combo", new Vector2(1, 1), new Vector2(-48, -40), 52, TextAnchor.UpperRight);
+            scoreText = CreateText("Score", new Vector2(0, 1), new Vector2(48, -40), 56, TextAlignmentOptions.TopLeft);
+            comboText = CreateText("Combo", new Vector2(1, 1), new Vector2(-48, -40), 52, TextAlignmentOptions.TopRight);
             comboBar = CreateBar(new Vector2(1, 1), new Vector2(-48, -112), new Vector2(260, 10), Image.OriginHorizontal.Right, new Color(1f, 0.75f, 0.3f));
-            levelText = CreateText("Level", new Vector2(0, 1), new Vector2(48, -112), 40, TextAnchor.UpperLeft);
+            levelText = CreateText("Level", new Vector2(0, 1), new Vector2(48, -112), 40, TextAlignmentOptions.TopLeft);
             xpBar = CreateBar(new Vector2(0, 1), new Vector2(48, -164), new Vector2(460, 10), Image.OriginHorizontal.Left, new Color(0.5f, 0.85f, 1f));
-            slotsText = CreateText("Abilities", new Vector2(0, 0), new Vector2(48, 48), 32, TextAnchor.LowerLeft);
+            slotsText = CreateText("Abilities", new Vector2(0, 0), new Vector2(48, 48), 32, TextAlignmentOptions.BottomLeft);
         }
 
         void Update()
@@ -71,7 +70,7 @@ namespace PurrcelainPanic
             comboText.color = Color.Lerp(Color.white, ComboHot, heat);
         }
 
-        Text CreateText(string name, Vector2 anchor, Vector2 position, int size, TextAnchor align)
+        TMP_Text CreateText(string name, Vector2 anchor, Vector2 position, int size, TextAlignmentOptions align)
         {
             var go = new GameObject(name, typeof(RectTransform));
             go.transform.SetParent(transform, false);
@@ -79,18 +78,7 @@ namespace PurrcelainPanic
             rt.anchorMin = rt.anchorMax = rt.pivot = anchor;
             rt.anchoredPosition = position;
             rt.sizeDelta = new Vector2(700, 200);
-            var text = go.AddComponent<Text>();
-            text.font = font;
-            text.fontSize = size;
-            text.fontStyle = FontStyle.Bold;
-            text.alignment = align;
-            text.horizontalOverflow = HorizontalWrapMode.Overflow;
-            text.verticalOverflow = VerticalWrapMode.Overflow;
-            text.raycastTarget = false;
-            var outline = go.AddComponent<Outline>();
-            outline.effectColor = new Color(0f, 0f, 0f, 0.6f);
-            outline.effectDistance = new Vector2(2f, -2f);
-            return text;
+            return UiText.Add(go, size, align);
         }
 
         void CreatePanel(Vector2 anchor, Vector2 position, Vector2 size)

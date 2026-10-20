@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,7 +6,7 @@ namespace PurrcelainPanic
 {
     /// <summary>
     /// Owner ETA 시계, 스테이지 전환 안내, 일시정지 화면, 결과 화면.
-    /// 그레이박스 단계라 UI를 코드로 만든다 (기본 내장 폰트, 폰트·이펙트는 기획서 부록 C).
+    /// 그레이박스 단계라 UI를 코드로 만든다.
     /// </summary>
     public class GameOverlayView : MonoBehaviour
     {
@@ -22,17 +23,15 @@ namespace PurrcelainPanic
             "스테이지 3  —  식탁 전체 개방, 금장 도자기 등장!",
         };
 
-        Font font;
-        Text etaText;
-        Text bannerText;
+        TMP_Text etaText;
+        TMP_Text bannerText;
         float bannerLeft;
         GameObject pausePanel;
         GameObject resultPanel;
-        Text resultText;
+        TMP_Text resultText;
 
         void Awake()
         {
-            font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             var canvas = gameObject.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             canvas.sortingOrder = 20;
@@ -73,6 +72,7 @@ namespace PurrcelainPanic
             bool hurry = game.EtaLeft <= 10f && game.State == GameState.Playing;
             etaText.color = hurry ? Color.Lerp(new Color(1f, 0.35f, 0.3f), Color.white, Mathf.PingPong(Time.unscaledTime * 2f, 1f)) : Color.white;
 
+            bannerText.enabled = !abilities.IsChoosing;   // 카드 화면 위에 겹치지 않게
             if (bannerLeft > 0f)
             {
                 bannerLeft -= Time.unscaledDeltaTime;
@@ -120,7 +120,7 @@ namespace PurrcelainPanic
             return go;
         }
 
-        Text CreateText(Transform parent, string text, int size, Vector2 anchor, Vector2 position, Vector2 box)
+        static TMP_Text CreateText(Transform parent, string text, int size, Vector2 anchor, Vector2 position, Vector2 box)
         {
             var go = new GameObject("Text", typeof(RectTransform));
             go.transform.SetParent(parent, false);
@@ -128,19 +128,8 @@ namespace PurrcelainPanic
             rt.anchorMin = rt.anchorMax = anchor;
             rt.anchoredPosition = position;
             rt.sizeDelta = box;
-            var t = go.AddComponent<Text>();
-            t.font = font;
+            var t = UiText.Add(go, size, TextAlignmentOptions.Center);
             t.text = text;
-            t.fontSize = size;
-            t.fontStyle = FontStyle.Bold;
-            t.alignment = TextAnchor.MiddleCenter;
-            t.horizontalOverflow = HorizontalWrapMode.Overflow;
-            t.verticalOverflow = VerticalWrapMode.Overflow;
-            t.color = Color.white;
-            t.raycastTarget = false;
-            var outline = go.AddComponent<Outline>();
-            outline.effectColor = new Color(0f, 0f, 0f, 0.6f);
-            outline.effectDistance = new Vector2(2f, -2f);
             return t;
         }
     }

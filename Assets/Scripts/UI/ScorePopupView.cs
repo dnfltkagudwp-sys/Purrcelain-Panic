@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,7 +7,7 @@ namespace PurrcelainPanic
 {
     /// <summary>
     /// 깨진 자리에 뜨는 등급·점수 팝업 (기획서 부록 C). 등급이 높을수록 크게 튀어나오고, 흔들리고, 불꽃이 퍼진다.
-    /// 콤보 중이면 배율 태그가, 수집용 도자기면 보너스 태그가 아래에 붙는다. UI는 코드로 만든다 (기본 내장 폰트).
+    /// 콤보 중이면 배율 태그가, 수집용 도자기면 보너스 태그가 아래에 붙는다. UI는 코드로 만든다.
     /// </summary>
     public class ScorePopupView : MonoBehaviour
     {
@@ -47,7 +48,7 @@ namespace PurrcelainPanic
         {
             public RectTransform root;
             public RectTransform body;      // 글씨 묶음 (기울어짐·배율)
-            public Text label, points, tag;
+            public TMP_Text label, points, tag;
             public Image ring;
             public Image[] sparks = new Image[MaxSparks];
             public Vector2[] sparkDirs = new Vector2[MaxSparks];
@@ -62,7 +63,6 @@ namespace PurrcelainPanic
             public bool active;
         }
 
-        Font font;
         Sprite square, ringSprite;
         Canvas canvas;
         RectTransform canvasRect;
@@ -82,7 +82,6 @@ namespace PurrcelainPanic
 
         void Awake()
         {
-            font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             canvas = gameObject.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             canvas.sortingOrder = sortingOrder;
@@ -270,21 +269,11 @@ namespace PurrcelainPanic
             return img;
         }
 
-        Text CreateText(string name, Transform parent, Vector2 position)
+        TMP_Text CreateText(string name, Transform parent, Vector2 position)
         {
             var rt = CreateRect(name, parent, new Vector2(700, 100));
             rt.anchoredPosition = position;
-            var text = rt.gameObject.AddComponent<Text>();
-            text.font = font;
-            text.fontStyle = FontStyle.Bold;
-            text.alignment = TextAnchor.MiddleCenter;
-            text.horizontalOverflow = HorizontalWrapMode.Overflow;
-            text.verticalOverflow = VerticalWrapMode.Overflow;
-            text.raycastTarget = false;
-            var outline = rt.gameObject.AddComponent<Outline>();
-            outline.effectColor = new Color(0f, 0f, 0f, 0.7f);
-            outline.effectDistance = new Vector2(2f, -2f);
-            return text;
+            return UiText.Add(rt.gameObject, 40, TextAlignmentOptions.Center);
         }
 
         /// <summary>가장자리가 부드러운 고리 텍스처. inner = 안쪽 반지름 비율.</summary>

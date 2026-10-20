@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -7,7 +8,7 @@ namespace PurrcelainPanic
 {
     /// <summary>
     /// 레벨업 카드 화면. 게임이 멈춘 동안 카드 최대 3장을 보여 주고 숫자 1·2·3으로 고른다.
-    /// 그레이박스 단계라 UI를 코드로 만든다 (기본 내장 폰트, 폰트·이펙트는 기획서 부록 C).
+    /// 그레이박스 단계라 UI를 코드로 만든다.
     /// </summary>
     public class CardSelectView : MonoBehaviour
     {
@@ -17,21 +18,19 @@ namespace PurrcelainPanic
         class Card
         {
             public GameObject root;
-            public Text key;
-            public Text title;
-            public Text subtitle;
-            public Text level;
-            public Text body;
+            public TMP_Text key;
+            public TMP_Text title;
+            public TMP_Text subtitle;
+            public TMP_Text level;
+            public TMP_Text body;
         }
 
-        Font font;
         GameObject panel;
-        Text header;
+        TMP_Text header;
         readonly List<Card> cards = new List<Card>();
 
         void Awake()
         {
-            font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             var canvas = gameObject.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             canvas.sortingOrder = 10;
@@ -138,19 +137,12 @@ namespace PurrcelainPanic
             img.raycastTarget = false;
         }
 
-        Text CreateText(Transform parent, string text, int size, Vector2 anchor, Vector2 position, Vector2 box, Color? color = null)
+        static TMP_Text CreateText(Transform parent, string text, int size, Vector2 anchor, Vector2 position, Vector2 box, Color? color = null)
         {
             var rt = CreateRect("Text", parent, anchor, anchor, position, box);
-            var t = rt.gameObject.AddComponent<Text>();
-            t.font = font;
+            var t = UiText.Add(rt.gameObject, size, TextAlignmentOptions.Center, wrap: true);
             t.text = text;
-            t.fontSize = size;
-            t.fontStyle = FontStyle.Bold;
-            t.alignment = TextAnchor.MiddleCenter;
-            t.horizontalOverflow = HorizontalWrapMode.Wrap;
-            t.verticalOverflow = VerticalWrapMode.Overflow;
             t.color = color ?? Color.white;
-            t.raycastTarget = false;
             return t;
         }
     }
