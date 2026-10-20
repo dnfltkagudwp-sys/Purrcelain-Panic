@@ -18,6 +18,7 @@ namespace PurrcelainPanic
         InputAction rightPawAction;
         float velocityX;
         float rangeCenterX;
+        bool waitMoveRelease, waitLeftRelease, waitRightRelease;
 
         public float MoveRangeX { get; set; }
 
@@ -61,11 +62,27 @@ namespace PurrcelainPanic
 
         void Update()
         {
-            // 멈춰 있는 동안(카드 선택 등)의 클릭은 앞발 입력으로 받지 않는다
-            bool paused = Time.timeScale <= 0f;
-            paws.SetHeld(Paw.Left, !paused && leftPawAction.IsPressed());
-            paws.SetHeld(Paw.Right, !paused && rightPawAction.IsPressed());
-            Move(moveAction.ReadValue<float>(), Time.deltaTime);
+            // 멈춰 있는 동안(카드 선택 등)에는 입력을 받지 않는다. 다시 진행된 뒤에도
+            // 멈추기 전부터 누르고 있던 키·버튼은 한 번 뗄 때까지 무시해서, 카드를 고르자마자 고양이가 달려가지 않게 한다
+            if (Time.timeScale <= 0f)
+            {
+                velocityX = 0f;
+                paws.SetHeld(Paw.Left, false);
+                paws.SetHeld(Paw.Right, false);
+                paws.Moving = false;
+                waitMoveRelease = waitLeftRelease = waitRightRelease = true;
+                return;
+            }
+
+            float input = moveAction.ReadValue<float>();
+            bool left = leftPawAction.IsPressed(), right = rightPawAction.IsPressed();
+            if (waitMoveRelease && input == 0f) waitMoveRelease = false;
+            if (waitLeftRelease && !left) waitLeftRelease = false;
+            if (waitRightRelease && !right) waitRightRelease = false;
+
+            paws.SetHeld(Paw.Left, left && !waitLeftRelease);
+            paws.SetHeld(Paw.Right, right && !waitRightRelease);
+            Move(waitMoveRelease ? 0f : input, Time.deltaTime);
         }
 
         void Move(float input, float dt)
