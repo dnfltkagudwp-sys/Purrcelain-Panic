@@ -185,6 +185,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 11a8bc63e661bfe489dc855f4326e0b9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 325864968}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 11a8bc63e661bfe489dc855f4326e0b9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 325864969}
   m_SourcePrefab: {fileID: 100100000, guid: 11a8bc63e661bfe489dc855f4326e0b9, type: 3}
 --- !u!4 &325864963 stripped
 Transform:
@@ -230,6 +233,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8263af722ca14624284d477f8b63f638, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PurrcelainPanic.TableSurface
+--- !u!114 &325864969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 325864964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b102d2a027b9d554aa2c0ec429ecaa58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PurrcelainPanic.TableZoneView
+  tuning: {fileID: 11400000, guid: a67a39ab242ff0c48afdc51e6e859542, type: 2}
+  stages: {fileID: 592726774}
+  coverMaterial: {fileID: 2100000, guid: fd238c00df5f70c4d978f9bf012417e7, type: 2}
+  openTime: 0.6
 --- !u!1 &451199531
 GameObject:
   m_ObjectHideFlags: 0
@@ -292,6 +311,7 @@ GameObject:
   - component: {fileID: 592726776}
   - component: {fileID: 592726777}
   - component: {fileID: 592726778}
+  - component: {fileID: 592726779}
   m_Layer: 0
   m_Name: Game
   m_TagString: Untagged
@@ -375,6 +395,21 @@ MonoBehaviour:
   score: {fileID: 592726776}
   paws: {fileID: 1130674698}
   spawner: {fileID: 1498481560}
+--- !u!114 &592726779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 592726773}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36b46486912747a45851a40f56afb4f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PurrcelainPanic.GameManager
+  tuning: {fileID: 11400000, guid: a67a39ab242ff0c48afdc51e6e859542, type: 2}
+  paws: {fileID: 1130674698}
+  abilities: {fileID: 592726778}
 --- !u!1 &740801962
 GameObject:
   m_ObjectHideFlags: 0
@@ -3250,6 +3285,59 @@ Transform:
   - {fileID: 1167082266}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1858459126
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1858459128}
+  - component: {fileID: 1858459127}
+  m_Layer: 0
+  m_Name: GameOverlay
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1858459127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1858459126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75561053b1e070d42b151bb447e4bcd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PurrcelainPanic.GameOverlayView
+  tuning: {fileID: 11400000, guid: a67a39ab242ff0c48afdc51e6e859542, type: 2}
+  game: {fileID: 592726779}
+  stages: {fileID: 592726774}
+  score: {fileID: 592726776}
+  abilities: {fileID: 592726778}
+--- !u!224 &1858459128
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1858459126}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1866970452
 GameObject:
   m_ObjectHideFlags: 0
@@ -5674,3 +5762,4 @@ SceneRoots:
   - {fileID: 1648698130}
   - {fileID: 1230646216}
   - {fileID: 1297442655}
+  - {fileID: 1858459128}

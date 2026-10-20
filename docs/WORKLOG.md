@@ -485,3 +485,22 @@ Unity: `Assets/Art/VaseVariants/`, 머티리얼 추출 후 Smoothness 0.65, Rota
 - 가장 유력한 원인: A(←)를 누른 채 카드가 뜨고, 카드를 고르는 순간 시간이 다시 흐르면서 아직 눌린 키로 고양이가 끝까지 이동 → 카메라가 따라가 화면 전체가 밀려 보임
 - 수정 (`CatController`): 멈춘 동안에는 이동 처리를 건너뛰고 속도 0. 다시 진행되면 멈추기 전부터 누르고 있던 이동 키·앞발 버튼은 한 번 뗄 때까지 무시
 - Unity가 백그라운드에서는 프레임이 멈춰 실제 키 입력으로는 재현·확인하지 못함 → 직접 플레이로 확인 필요
+
+---
+
+## 7단계 — 스테이지와 특수 도자기, 게임 흐름 마무리
+
+> 커밋하고 7단계 가자
+
+스테이지 전환·식탁 열 확장·Fragile/Collector 등장 확률은 4단계에서 데이터로, Collector 점수 2배·경험치 +2는 5단계에서 이미 들어감. 이번에 남은 것과 기획서 완료 기준의 게임 흐름을 마무리.
+
+| 항목 | 내용 |
+|---|---|
+| Collector's China 머티리얼 | `Vase_Squat` 텍스처에서 무늬(채도 있는 픽셀) → 금색, 유약 → 짙은 남색으로 변환한 `T_Vase_Collector_BaseColor` + 금색 부분만 금속인 `T_Vase_Collector_MetalSmooth`(R 금속도, A 매끄러움) → `M_Vase_Collector` (도자기·파편 모두) |
+| Fragile Batch 머티리얼 | `Vase_Tall` 민트 유약의 채도 ×0.55, 밝기 +8% → `M_Vase_Fragile`, 매끄러움 0.85 |
+| `GameManager` | Owner ETA 180초 (줄어들기만 함), 0이 되면 게임 종료(시간 정지, 충전 취소), ESC 일시정지 (카드 화면 중에는 무시), 결과 화면에서 R로 다시 시작 |
+| `GameOverlayView` | 화면 위 가운데 "집주인 도착까지 m:ss" (마지막 10초는 빨갛게 깜빡임), 스테이지 전환 안내 2초, 일시정지 화면, 결과 화면 (최종 점수·최고 콤보·PURRFECT 횟수·도달 레벨) |
+| `TableZoneView` | 아직 열리지 않은 식탁 양 끝 열을 반투명 어두운 덮개로 표시, 스테이지가 오르면 0.6초에 걸쳐 줄어들며 열림 (스테이지 1: 5열, 2: 7열, 3: 전체) |
+
+검증 (Play 모드 직접 진행 180초): 시작 ETA 180 → 61초에 스테이지 2, 121초에 스테이지 3, 181초에 상태 Over·시간 정지·결과 화면. ESC → Paused·시간 0, 다시 ESC → Playing·시간 1. 잠긴 구간 덮개가 스테이지 1에서 양 끝 0.72 m, 스테이지 2에서 0.47 m, 스테이지 3에서 사라짐. 스테이지 2 진입 시 안내 문구 설정 확인.
+캡처: `Captures/unity/Vase_Kinds_Normal_Fragile_Collector.png`, `Stage1_LockedZones.png`, `Stage2_Banner.png`, `Result_Screen.png`

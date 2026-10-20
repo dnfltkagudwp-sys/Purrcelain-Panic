@@ -66,6 +66,8 @@ MonoBehaviour:
   shardInheritVelocity: 0.3
   shardLifetime: 4
   shardShrinkTime: 0.5
+  ownerEta: 180
+  stageBannerTime: 2
   columnCount: 11
   columnSpacing: 0.25
   rowOffsets:

@@ -76,6 +76,10 @@ namespace PurrcelainPanic
         public float shardLifetime = 4f;            // 초
         public float shardShrinkTime = 0.5f;        // 마지막에 줄어들며 사라지는 시간, 초
 
+        [Header("게임 (3장)")]
+        public float ownerEta = 180f;               // 집주인이 돌아올 때까지, 초. 늘리거나 줄이는 효과는 없음
+        public float stageBannerTime = 2f;          // 스테이지 전환 안내 표시 시간, 초
+
         [Header("생성 격자 (B-1)")]
         public int columnCount = 11;
         public float columnSpacing = 0.25f;         // m, 가운데 열이 x = 0. 가장 굵은 Collector 지름 0.223 m보다 여유 있게
