@@ -1,58 +1,29 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace PurrcelainPanic
 {
     /// <summary>
-    /// 점수·콤보 HUD와 깨진 자리에 뜨는 등급 문구. 그레이박스 단계라 UI를 코드로 만든다 (기본 내장 폰트).
+    /// 점수·콤보·레벨 HUD (깨진 자리 팝업은 ScorePopupView). 그레이박스 단계라 UI를 코드로 만든다 (기본 내장 폰트).
     /// </summary>
     public class HudView : MonoBehaviour
     {
         [SerializeField] ScoreComboManager score;
         [SerializeField] ExperienceAbilityManager abilities;
-        [SerializeField] Camera worldCamera;
-        [SerializeField] float popupLifetime = 0.9f;
-        [SerializeField] float popupRise = 80f;   // 기준 해상도 픽셀
+        [SerializeField] float comboPunchScale = 0.35f;   // 콤보가 오를 때 튀는 크기
+        [SerializeField] float comboPunchTime = 0.2f;     // 원래 크기로 돌아오는 시간, 초
 
-        static readonly string[] GradeNames = { "CRACK", "SMASH", "PURRFECT!" };
-        static readonly Color[] GradeColors =
-        {
-            new Color(0.95f, 0.95f, 0.95f),
-            new Color(1f, 0.62f, 0.25f),
-            new Color(1f, 0.85f, 0.2f),
-        };
-        static readonly int[] GradeFontSize = { 40, 52, 72 };
-
-        class Popup
-        {
-            public Text text;
-            public Vector3 worldPoint;
-            public float age;
-            public bool active;
-        }
+        static readonly Color ComboHot = new Color(1f, 0.3f, 0.35f);
 
         Font font;
-        RectTransform canvasRect;
+        int lastCombo;
+        float comboPunch;
         Text scoreText;
         Text comboText;
         Image comboBar;
         Text levelText;
         Image xpBar;
         Text slotsText;
-        readonly List<Popup> popups = new List<Popup>();
-
-        public int ActivePopupCount
-        {
-            get
-            {
-                int n = 0;
-                foreach (var p in popups)
-                    if (p.active)
-                        n++;
-                return n;
-            }
-        }
 
         void Awake()
         {
@@ -63,7 +34,6 @@ namespace PurrcelainPanic
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1920, 1080);
             scaler.matchWidthOrHeight = 0.5f;
-            canvasRect = (RectTransform)transform;
 
             CreatePanel(new Vector2(0, 1), new Vector2(24, -24), new Vector2(520, 160));   // 왼쪽 위 글씨 뒤 반투명 바탕
             scoreText = CreateText("Score", new Vector2(0, 1), new Vector2(48, -40), 56, TextAnchor.UpperLeft);
@@ -73,9 +43,6 @@ namespace PurrcelainPanic
             xpBar = CreateBar(new Vector2(0, 1), new Vector2(48, -164), new Vector2(460, 10), Image.OriginHorizontal.Left, new Color(0.5f, 0.85f, 1f));
             slotsText = CreateText("Abilities", new Vector2(0, 0), new Vector2(48, 48), 32, TextAnchor.LowerLeft);
         }
-
-        void OnEnable() => score.Scored += OnScored;
-        void OnDisable() => score.Scored -= OnScored;
 
         void Update()
         {
@@ -94,49 +61,14 @@ namespace PurrcelainPanic
                 slotsText.text = sb.ToString();
             }
 
-            foreach (var p in popups)
-                if (p.active)
-                    Animate(p, Time.deltaTime);
-        }
-
-        void OnScored(ScoreEvent e)
-        {
-            var p = popups.Find(x => !x.active);
-            if (p == null)
-            {
-                p = new Popup { text = CreateText("Popup", new Vector2(0, 0), Vector2.zero, 40, TextAnchor.MiddleCenter) };
-                popups.Add(p);
-            }
-            int g = (int)e.grade;
-            p.text.text = $"{GradeNames[g]}\n+{e.points}";
-            p.text.color = GradeColors[g];
-            p.text.fontSize = GradeFontSize[g];
-            p.worldPoint = e.source.point + Vector3.up * 0.25f;
-            p.age = 0f;
-            p.active = true;
-            p.text.gameObject.SetActive(true);
-            Animate(p, 0f);
-        }
-
-        void Animate(Popup p, float dt)
-        {
-            p.age += dt;
-            float t = p.age / popupLifetime;
-            if (t >= 1f)
-            {
-                p.active = false;
-                p.text.gameObject.SetActive(false);
-                return;
-            }
-            Vector3 screen = worldCamera.WorldToScreenPoint(p.worldPoint);
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screen, null, out var local);
-            var rt = p.text.rectTransform;
-            rt.anchoredPosition = local + canvasRect.rect.size * 0.5f + Vector2.up * popupRise * t;
-            float pop = t < 0.15f ? Mathf.Lerp(0.6f, 1.15f, t / 0.15f) : Mathf.Lerp(1.15f, 1f, (t - 0.15f) / 0.2f);
-            rt.localScale = Vector3.one * pop;
-            var c = p.text.color;
-            c.a = t < 0.6f ? 1f : 1f - (t - 0.6f) / 0.4f;
-            p.text.color = c;
+            // 콤보가 오를 때마다 콤보 글씨가 툭 튀고, 배율이 높을수록 붉어진다
+            if (score.Combo > lastCombo)
+                comboPunch = 1f;
+            lastCombo = score.Combo;
+            comboPunch = Mathf.MoveTowards(comboPunch, 0f, Time.deltaTime / comboPunchTime);
+            comboText.rectTransform.localScale = Vector3.one * (1f + comboPunchScale * comboPunch * comboPunch);
+            float heat = Mathf.InverseLerp(1f, score.ComboMultiplier(int.MaxValue), score.Multiplier);
+            comboText.color = Color.Lerp(Color.white, ComboHot, heat);
         }
 
         Text CreateText(string name, Vector2 anchor, Vector2 position, int size, TextAnchor align)
@@ -145,8 +77,6 @@ namespace PurrcelainPanic
             go.transform.SetParent(transform, false);
             var rt = (RectTransform)go.transform;
             rt.anchorMin = rt.anchorMax = rt.pivot = anchor;
-            if (align == TextAnchor.MiddleCenter)
-                rt.pivot = new Vector2(0.5f, 0.5f);
             rt.anchoredPosition = position;
             rt.sizeDelta = new Vector2(700, 200);
             var text = go.AddComponent<Text>();
