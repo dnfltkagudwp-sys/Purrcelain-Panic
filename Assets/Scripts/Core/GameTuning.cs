@@ -92,37 +92,39 @@ namespace PurrcelainPanic
         public float movingVaseClearance = 0.45f;   // 이 거리 안에 움직이는 도자기가 있으면 그 칸에는 생성 안 함, m
         public float movingVaseSpeed = 0.15f;       // 이 속도 이상이면 움직이는 도자기로 봄, m/s
         public float firstSpawnDelay = 0.5f;        // 초
+        public float refillInterval = 0.35f;        // 최소 개수보다 적을 때 채우는 간격, 초
+        public float spawnRetryDelay = 0.25f;       // 자리가 없어 생성에 실패하면 이만큼 뒤 다시 시도, 초
 
         [Header("스테이지 (B-8)")]
         public StageSettings[] stages =
         {
-            new StageSettings { startTime = 0f, interval = 2.5f, columns = 5, single = 70, pair = 30, normal = 100 },
-            new StageSettings { startTime = 60f, interval = 1.8f, columns = 7, single = 45, pair = 30, line2 = 25, normal = 75, fragile = 25 },
-            new StageSettings { startTime = 120f, interval = 1.2f, columns = 11, single = 30, pair = 25, line2 = 25, cluster = 20, normal = 60, fragile = 25, collector = 15 },
+            new StageSettings { startTime = 0f, interval = 2.5f, columns = 5, minOnTable = 3, single = 70, pair = 30, normal = 100 },
+            new StageSettings { startTime = 60f, interval = 1.8f, columns = 7, minOnTable = 5, single = 45, pair = 30, line2 = 25, normal = 75, fragile = 25 },
+            new StageSettings { startTime = 120f, interval = 1.2f, columns = 11, minOnTable = 7, single = 30, pair = 25, line2 = 25, cluster = 20, normal = 60, fragile = 25, collector = 15 },
         };
 
         [Header("경험치·카드 (B-9)")]
-        public int xpRequiredBase = 4;              // 레벨업 요구량 = 4 + 3 × (현재 레벨 - 1)
-        public int xpRequiredStep = 3;
+        public int xpRequiredBase = 4;              // 레벨업 요구량 = 4 + 5 × (현재 레벨 - 1)
+        public int xpRequiredStep = 5;              // 도자기가 끊기지 않게 채우면서 경험치가 두 배가 되어 3 → 5
         public int maxAbilitySlots = 6;
         public int maxAbilityLevel = 5;
         public int cardsPerLevelUp = 3;
         public int emptyLevelUpBonus = 500;         // 고를 카드가 없을 때 대신 주는 점수
 
         [Header("능력 수치 (B-10, 레벨당)")]
-        public float ironPawPerLevel = 0.12f;       // 밀기 힘 +12%
+        public float ironPawPerLevel = 0.20f;       // 밀기 힘 +20%
         public float dominoEffectPerLevel = 0.07f;  // 힘 전달률 +7%p (최대 95%)
-        public float quickSwipePerLevel = 0.08f;    // 쿨다운 -8%
-        public float wideArcPerLevel = 0.08f;       // Sphere Cast 반경 +8%
-        public float alternatingPerLevel = 0.06f;   // 교대 Swipe 힘 +6%
+        public float quickSwipePerLevel = 0.12f;    // 쿨다운 -12%
+        public float wideArcPerLevel = 0.20f;       // Sphere Cast 반경 +20%
+        public float alternatingPerLevel = 0.15f;   // 교대 Swipe 힘 +15%
         public float alternatingWindow = 1.5f;      // 직전 Swipe(반대 손, 적중)부터 이 시간 안이어야 교대로 인정, 초
-        public float comboKeeperPerLevel = 0.25f;   // 콤보 유지시간 +0.25초
-        public float dominoDisplayPerLevel = 8f;    // 앞뒤 2개 패턴 가중치 +8
+        public float comboKeeperPerLevel = 0.40f;   // 콤보 유지시간 +0.4초
+        public float dominoDisplayPerLevel = 15f;   // 앞뒤 2개 패턴 가중치 +15
         public int dominoDisplayLine3Level = 4;     // 이 레벨부터 앞뒤 3개 패턴 등장
         public float dominoDisplayLine3Weight = 10f;
-        public float fullSetPerLevel = 0.10f;       // 한 개 더 놓을 확률 +10%
-        public float packedDisplayPerLevel = 0.15f; // 기존 도자기 옆 자리 우선 확률 +15%
-        public float clawGustPerLevel = 0.05f;      // 충격파 사거리 +0.05 m
+        public float fullSetPerLevel = 0.15f;       // 한 개 더 놓을 확률 +15%
+        public float packedDisplayPerLevel = 0.20f; // 기존 도자기 옆 자리 우선 확률 +20%
+        public float clawGustPerLevel = 0.08f;      // 충격파 사거리 +0.08 m
 
         public int XpRequired(int level) => xpRequiredBase + xpRequiredStep * (level - 1);
 

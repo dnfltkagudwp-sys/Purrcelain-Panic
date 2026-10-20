@@ -43,6 +43,7 @@ namespace PurrcelainPanic
         readonly float[] kindWeights = new float[3];
         StageSettings stage;
         float timer;
+        float refillTimer;
 
         public int ActiveCount
         {
@@ -60,7 +61,7 @@ namespace PurrcelainPanic
         void Awake()
         {
             SetStage(0);
-            timer = tuning.firstSpawnDelay;
+            timer = refillTimer = tuning.firstSpawnDelay;
         }
 
         public void SetStage(int index)
@@ -73,11 +74,35 @@ namespace PurrcelainPanic
 
         public void Tick(float dt)
         {
+            // 식탁이 비어 가면 간격을 기다리지 않고 채운다 (쉬는 구간 방지)
+            refillTimer -= dt;
+            if (refillTimer <= 0f && OnTableCount < stage.minOnTable)
+            {
+                refillTimer = tuning.refillInterval;
+                if (SpawnOnce() > 0)
+                    timer = Mathf.Max(timer, tuning.refillInterval);
+            }
+
             timer -= dt;
             if (timer > 0f)
                 return;
-            timer += stage.interval;
-            SpawnOnce();
+            // 자리가 없어 실패하면 다음 간격까지 기다리지 않고 곧 다시 시도
+            timer = SpawnOnce() > 0 ? stage.interval : tuning.spawnRetryDelay;
+        }
+
+        /// <summary>식탁 위에 서 있거나 놓여 있는 도자기 수 (떨어지는 중인 것은 제외).</summary>
+        public int OnTableCount
+        {
+            get
+            {
+                float minY = TableSurface.Instance.TopY - 0.1f;
+                int n = 0;
+                foreach (var pool in pools)
+                    foreach (var v in pool)
+                        if (v.gameObject.activeSelf && v.transform.position.y > minY)
+                            n++;
+                return n;
+            }
         }
 
         /// <summary>패턴 하나를 고르고, 들어갈 자리가 없으면 단독으로, 그것도 없으면 이번 생성은 건너뛴다.</summary>

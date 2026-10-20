@@ -12,6 +12,7 @@ namespace PurrcelainPanic
         public float startTime;         // 게임 시작부터, 초
         public float interval = 2.5f;   // 생성 간격, 초
         public int columns = 5;         // 가운데부터 쓰는 열 수 (홀수)
+        public int minOnTable = 3;      // 식탁 위 도자기가 이보다 적으면 간격을 기다리지 않고 바로 채움
 
         [Header("패턴 가중치")]
         public float single;

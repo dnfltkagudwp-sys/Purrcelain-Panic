@@ -21,6 +21,8 @@ namespace PurrcelainPanic
         bool waitMoveRelease, waitLeftRelease, waitRightRelease;
 
         public float MoveRangeX { get; set; }
+        public float RawMoveInput { get; private set; }   // 진단용: 이번 프레임 이동 키 입력
+        public float VelocityX => velocityX;
 
         void Awake()
         {
@@ -66,6 +68,7 @@ namespace PurrcelainPanic
             // 멈추기 전부터 누르고 있던 키·버튼은 한 번 뗄 때까지 무시해서, 카드를 고르자마자 고양이가 달려가지 않게 한다
             if (Time.timeScale <= 0f)
             {
+                RawMoveInput = moveAction.ReadValue<float>();
                 velocityX = 0f;
                 paws.SetHeld(Paw.Left, false);
                 paws.SetHeld(Paw.Right, false);
@@ -75,6 +78,7 @@ namespace PurrcelainPanic
             }
 
             float input = moveAction.ReadValue<float>();
+            RawMoveInput = input;
             bool left = leftPawAction.IsPressed(), right = rightPawAction.IsPressed();
             if (waitMoveRelease && input == 0f) waitMoveRelease = false;
             if (waitLeftRelease && !left) waitLeftRelease = false;

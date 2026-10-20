@@ -82,10 +82,13 @@ MonoBehaviour:
   movingVaseClearance: 0.45
   movingVaseSpeed: 0.15
   firstSpawnDelay: 0.5
+  refillInterval: 0.35
+  spawnRetryDelay: 0.25
   stages:
   - startTime: 0
     interval: 2.5
     columns: 5
+    minOnTable: 3
     single: 70
     pair: 30
     line2: 0
@@ -97,6 +100,7 @@ MonoBehaviour:
   - startTime: 60
     interval: 1.8
     columns: 7
+    minOnTable: 5
     single: 45
     pair: 30
     line2: 25
@@ -108,6 +112,7 @@ MonoBehaviour:
   - startTime: 120
     interval: 1.2
     columns: 11
+    minOnTable: 7
     single: 30
     pair: 25
     line2: 25
@@ -117,21 +122,21 @@ MonoBehaviour:
     fragile: 25
     collector: 15
   xpRequiredBase: 4
-  xpRequiredStep: 3
+  xpRequiredStep: 5
   maxAbilitySlots: 6
   maxAbilityLevel: 5
   cardsPerLevelUp: 3
   emptyLevelUpBonus: 500
-  ironPawPerLevel: 0.12
+  ironPawPerLevel: 0.2
   dominoEffectPerLevel: 0.07
-  quickSwipePerLevel: 0.08
-  wideArcPerLevel: 0.08
-  alternatingPerLevel: 0.06
+  quickSwipePerLevel: 0.12
+  wideArcPerLevel: 0.2
+  alternatingPerLevel: 0.15
   alternatingWindow: 1.5
-  comboKeeperPerLevel: 0.25
-  dominoDisplayPerLevel: 8
+  comboKeeperPerLevel: 0.4
+  dominoDisplayPerLevel: 15
   dominoDisplayLine3Level: 4
   dominoDisplayLine3Weight: 10
-  fullSetPerLevel: 0.1
-  packedDisplayPerLevel: 0.15
-  clawGustPerLevel: 0.05
+  fullSetPerLevel: 0.15
+  packedDisplayPerLevel: 0.2
+  clawGustPerLevel: 0.08
