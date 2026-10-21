@@ -115,6 +115,7 @@ namespace PurrcelainPanic
         public float ironPawPerLevel = 0.20f;       // 밀기 힘 +20%
         public float dominoEffectPerLevel = 0.07f;  // 힘 전달률 +7%p (최대 95%)
         public float quickSwipePerLevel = 0.12f;    // 쿨다운 -12%
+        public float quickChargePerLevel = 0.12f;   // 최대 충전시간 -12%
         public float wideArcPerLevel = 0.20f;       // Sphere Cast 반경 +20%
         public float alternatingPerLevel = 0.15f;   // 교대 Swipe 힘 +15%
         public float alternatingWindow = 1.5f;      // 직전 Swipe(반대 손, 적중)부터 이 시간 안이어야 교대로 인정, 초

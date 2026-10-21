@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>충전 표시 · 작은 캡슐형 시안</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#eee9dc;color:#342a22;font:16px/1.7 "Malgun Gothic",sans-serif}main{max-width:800px;margin:auto;padding:32px 24px}h1{font-size:24px;margin:0 0 12px}h2{font-size:18px;margin:0 0 8px}p{margin:8px 0 20px}.note{font-size:14px;color:#645343}.state{margin:16px 0;padding:20px;background:#faf7ee;border:1px solid #d5cbb7;border-radius:8px}.stage{height:110px;background:#e0cfaa;display:flex;align-items:center;justify-content:center;gap:54px;border-radius:4px}.pill{position:relative;width:76px;height:9px;padding:2px;border-radius:20px;background:#594739;box-shadow:0 1px 0 #fff7dd88}.fill{height:5px;width:60%;border-radius:10px;background:#f6e5ba}.full .fill{width:100%;background:#f4c756}.full{box-shadow:0 0 0 2px #ffe29c66}.hidden{visibility:hidden}figcaption{font-size:14px;margin-top:12px;color:#56483c}figure{margin:0}.tag{font-size:13px;color:#645343;margin:0 0 8px}.details{border-top:1px solid #cbbfa7;padding-top:18px}strong{color:#3a3026}@media(max-width:480px){main{padding:24px 16px}.stage{gap:35px}.state{padding:16px}}
+</style>
+</head>
+<body><main>
+<h1>글자 대신, 작은 충전 표시</h1>
+<p>실제 게임 화면이 아닌 <strong>표시 형태·크기 시안</strong>입니다. 고양이와 도자기가 주인공으로 남도록 작게 붙입니다.</p>
+<section class="state"><h2>A · 충전 중</h2><figure><div class="stage" role="img" aria-label="왼손 60퍼센트, 오른손 30퍼센트의 작은 둥근 게이지"><div class="pill"><div class="fill"></div></div><div class="pill"><div class="fill" style="width:30%"></div></div></div><figcaption>검은 직사각형과 손 이름을 없애고, 따뜻한 짙은 갈색 테두리와 크림색 채움만 남깁니다.</figcaption></figure></section>
+<section class="state"><h2>B · 왼손 완충</h2><figure><div class="stage" role="img" aria-label="왼손은 금색으로 가득 찬 게이지, 오른손은 충전 중"><div class="pill full"><div class="fill"></div></div><div class="pill"><div class="fill" style="width:60%"></div></div></div><figcaption>“완충!” 글자 대신 금색과 얇은 빛 테두리로 구분합니다. 기존 알림음은 손마다 한 번 유지합니다.</figcaption></figure></section>
+<section class="state"><h2>C · 왼손 휘두르기 / 취소</h2><figure><div class="stage" role="img" aria-label="왼손 표시는 사라지고 충전 중인 오른손 게이지만 남음"><div class="pill hidden"></div><div class="pill"><div class="fill" style="width:60%"></div></div></div><figcaption>동작이 끝난 손만 숨깁니다. 양손 모두 쉬거나 카드 선택·일시정지 중이면 아무 표시도 남지 않습니다.</figcaption></figure></section>
+<div class="details"><p><strong>게임 안 배치:</strong> 앞발 옆, 고양이 머리 중심과 도자기 영역을 피하는 위치. 위 예시는 비교를 위해 확대된 형태이며, 최종 화면에서는 각 게이지를 약 50~60px 폭으로 맞춥니다.</p><p class="note">새 카드 ‘순간 집중’: 레벨당 충전시간 −12%, Lv 5에서 1초 → 0.4초. 기존 ‘재빠른 앞발’의 쿨다운 감소와 별개입니다. UI는 이 시안을 확인한 뒤 반영합니다.</p></div>
+</main></body></html>

@@ -37,6 +37,7 @@ namespace PurrcelainPanic
         [SerializeField] ParticleSystem gust;   // 발톱 바람 줄기 (선택)
 
         public event Action<PawHit> VaseHit;
+        public event Action<float> SwipeReleased;
 
         enum Phase { Ready, Charging, Swiping }
 
@@ -80,6 +81,8 @@ namespace PurrcelainPanic
         public bool IsIdle(Paw paw) => paws[(int)paw].phase == Phase.Ready && paws[(int)paw].layerWeight <= 0f;
         public bool IsBusy => paws[0].phase != Phase.Ready || paws[1].phase != Phase.Ready;
         public float ChargeOf(Paw paw) => paws[(int)paw].charge01;
+        public bool IsPawCharging(Paw paw) => paws[(int)paw].phase == Phase.Charging;
+        public Vector3 ChargePosition(Paw paw) => paws[(int)paw].hand.position;
         public float CooldownLeft(Paw paw) => paws[(int)paw].cooldownLeft;
 
         float ClipDuration => (tuning.clipLastFrame - 1) / ClipFps;
@@ -124,6 +127,7 @@ namespace PurrcelainPanic
         // 능력 카드(6단계)가 바꾸는 값
         public float ImpulseMultiplier { get; set; } = 1f;     // Iron Paw
         public float CooldownMultiplier { get; set; } = 1f;    // Quick Swipe
+        public float ChargeTimeMultiplier { get; set; } = 1f;  // Quick Charge
         public float CastRadiusMultiplier { get; set; } = 1f;  // Wide Arc
         public float AlternatingBonus { get; set; }            // Alternating Paws: 교대로 맞히면 다음 Swipe 힘 추가 비율
         public float ShockwaveRangeBonus { get; set; }         // 발톱 바람: 충격파 사거리 추가, m
@@ -186,7 +190,7 @@ namespace PurrcelainPanic
 
                 case Phase.Charging:
                     s.chargeTime += dt;
-                    s.charge01 = Mathf.Clamp01(s.chargeTime / tuning.maxChargeTime);
+                    s.charge01 = Mathf.Clamp01(s.chargeTime / (tuning.maxChargeTime * ChargeTimeMultiplier));
                     s.clipTime = Mathf.Min(s.clipTime + dt / ClipDuration, tuning.FrameToNormalized(tuning.windupFrame));
                     if (!s.held)
                         Release(s);
@@ -238,6 +242,7 @@ namespace PurrcelainPanic
             // 준비 자세 이후 남은 동작이 쿨다운보다 길면 빨리 재생 (Quick Swipe)
             float remaining = (1f - s.clipTime) * ClipDuration;
             s.playbackSpeed = Mathf.Max(1f, remaining / Mathf.Max(Cooldown, 0.01f));
+            SwipeReleased?.Invoke(s.charge01);
         }
 
         bool InHitWindow(float clipTime) =>

@@ -140,6 +140,7 @@ namespace PurrcelainPanic
             paws.ImpulseMultiplier = 1f + tuning.ironPawPerLevel * Lv(AbilityId.IronPaw);
             BreakableVase.ChainTransferBonus = tuning.dominoEffectPerLevel * Lv(AbilityId.DominoEffect);
             paws.CooldownMultiplier = 1f - tuning.quickSwipePerLevel * Lv(AbilityId.QuickSwipe);
+            paws.ChargeTimeMultiplier = 1f - tuning.quickChargePerLevel * Lv(AbilityId.QuickCharge);
             paws.CastRadiusMultiplier = 1f + tuning.wideArcPerLevel * Lv(AbilityId.WideArc);
             paws.AlternatingBonus = tuning.alternatingPerLevel * Lv(AbilityId.AlternatingPaws);
             paws.ShockwaveRangeBonus = tuning.clawGustPerLevel * Lv(AbilityId.ClawGust);

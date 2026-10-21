@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Purrcelain Panic · Unity 평가 기준 정리</title>
+<style>
+:root{--ink:#292d29;--muted:#575e55;--paper:#fffef9;--back:#f0eee6;--line:#d5d7cb;--accent:#315c45;--soft:#edf2e9;--warn:#784421}
+*{box-sizing:border-box}body{margin:0;background:var(--back);color:var(--ink);font:16px/1.7 "Malgun Gothic",sans-serif}main{max-width:1080px;margin:auto;padding:36px 32px 64px;background:var(--paper)}h1{font-size:30px;line-height:1.3;margin:6px 0 16px}h2{font-size:22px;margin:38px 0 14px;border-bottom:1px solid var(--line);padding-bottom:9px}h3{font-size:18px;margin:24px 0 8px}p{margin:10px 0}.meta{font-size:14px;color:var(--muted)}.lead{padding:16px 20px;background:var(--soft);border:1px solid var(--line)}a{color:#244f3b;text-underline-offset:3px}a:focus-visible{outline:3px solid var(--accent);outline-offset:4px}code{font-size:14px;background:#f1f0e9;padding:1px 4px;overflow-wrap:anywhere}table{width:100%;border-collapse:collapse;font-size:15px}th,td{text-align:left;vertical-align:top;padding:12px 10px;border-bottom:1px solid var(--line);overflow-wrap:anywhere}th{background:var(--soft)}.score{white-space:nowrap;font-variant-numeric:tabular-nums}.state{font-weight:700;color:var(--accent)}.pending{color:var(--warn);font-weight:700}.table-wrap{overflow-x:auto}li{margin:8px 0}figure{margin:18px 0}img{display:block;width:100%;height:auto;border:1px solid var(--line)}figcaption{font-size:14px;color:var(--muted);margin-top:6px}.note{color:var(--muted);font-size:14px}ol,ul{padding-left:24px}.summary{font-size:18px}section{scroll-margin-top:18px}
+@media(max-width:640px){main{padding:24px 16px 40px}h1{font-size:25px}h2{font-size:20px}table{font-size:14px}th,td{padding:10px 7px}.rubric{min-width:720px}.table-wrap{border:1px solid var(--line)}}
+@media print{body{background:white}main{max-width:none;padding:0;font-size:10pt}h1{font-size:23pt}h2{break-after:avoid;font-size:16pt}h3{break-after:avoid}.table-wrap{overflow:visible}tr,figure,.lead{break-inside:avoid}th,td{padding:7px 5px}a{color:inherit}img{max-height:100mm;object-fit:contain}@page{size:A4;margin:16mm}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<p class="meta">제2차 성취도 평가 · Unity 게임 프로토타입 개발 · 정우영 · 평가일 2026.10.22</p>
+<h1>Purrcelain Panic<br>평가 기준별 제출 구성안</h1>
+<p>GitHub: <a href="https://github.com/dnfltkagudwp-sys/Purrcelain-Panic">https://github.com/dnfltkagudwp-sys/Purrcelain-Panic</a></p>
+<div class="lead"><p class="summary"><strong>핵심 구현 근거는 확보되어 있습니다. 제출 전 우선순위는 최신 버전 전체 플레이 검증 → PC 빌드 → 영상 → PDF입니다.</strong></p><p>이 문서는 저장소·현재 코드·개발 기록을 평가표에 대응시킨 정리본입니다. 최종 제출 PDF나 채점 결과가 아니며, 기록에 있는 과거 검증을 최신 버전의 검증으로 간주하지 않았습니다.</p></div>
+</header>
+<section>
+<h2>1. 작품 소개에 쓸 내용</h2>
+<p><strong>고양이가 양쪽 앞발로 도자기를 밀어 떨어뜨리는 3D 물리 액션 로그라이트.</strong> 집주인이 돌아오기 전 약 3분 동안 도자기를 깨며 고득점을 노립니다. 파괴 등급과 콤보로 점수·경험치를 얻고, 레벨업 카드로 앞발과 연쇄 파괴 능력을 강화합니다.</p>
+<p><strong>기획 의도:</strong> 고양이가 물건을 떨어뜨리는 익숙한 행동을 물리 충돌과 연쇄 파괴의 손맛으로 확장했습니다. 1차 과제에서 제작한 고양이·식탁·도자기를 실제로 조작하고 파괴할 수 있는 게임으로 연결하는 데 초점을 두었습니다.</p>
+<p><strong>종료 규칙:</strong> 적을 처치하거나 승리 지점에 도달하는 방식이 아니라, 제한 시간이 끝나면 집주인이 돌아오고 최종 기록을 확인하는 점수 경쟁형입니다. 별도의 승리 판정이 있다고 설명하지 않습니다.</p>
+<p><strong>조작:</strong> A/D 또는 방향키로 이동 · 마우스 좌/우 버튼을 눌렀다 떼어 양손 Swipe · 1/2/3 또는 카드 클릭으로 강화 선택 · ESC 일시정지 · 결과 화면에서 R 재시작. 카드 클릭은 코드 반영 상태이며 최종 수동 검증이 필요합니다.</p>
+<p class="note">현재 플레이 화면 근거: <code>Captures/screenshot-20261021-171610.png</code>. 최종 포트폴리오 대표 이미지는 제출 빌드에서 다시 촬영하는 것을 권장합니다.</p>
+</section>
+<section>
+<h2>2. 채점표 대응표 · 총 100점</h2>
+<div class="table-wrap"><table class="rubric">
+<thead><tr><th scope="col">평가 항목</th><th scope="col">배점</th><th scope="col">현재 근거와 포트폴리오에 보여줄 것</th><th scope="col">제출 전 상태</th></tr></thead>
+<tbody>
+<tr><td>에셋 임포트·프리팹·씬</td><td class="score">10</td><td>1차 고양이·식탁·도자기 FBX 재사용. 일반·Fragile·Collector 도자기와 파편 프리팹 존재. Inspector와 Project 창을 함께 캡처.<br><code>Assets/Prefabs/Vases/</code>, <code>Assets/Prefabs/Shards/</code></td><td><span class="state">구현 근거 있음</span><br>1차 결과와 Unity 적용을 연결해 설명.</td></tr>
+<tr><td>조명·카메라·배경</td><td class="score">10</td><td>고양이 앞발과 낙하 바닥이 보이는 가까운 카메라, 주방 가장자리 구조, AI 화분·카툰 타일. 배경 전체 노출보다 플레이 가시성을 우선한 전후 비교.</td><td><span class="state">화면 확인됨</span><br>핵심 에셋·AI 생성물·단순 도형 구조를 구분.</td></tr>
+<tr><td>플레이어 조작</td><td class="score">15</td><td>X축 이동, 양손 독립 충전·Swipe, 손끝 경로 Sphere Cast와 충격량 적용.<br><code>CatController</code>, <code>PawSwipe</code>, <code>CameraFollow</code></td><td><span class="pending">최종 수동 검증</span><br>좌우 끝·양손·짧은 클릭·최대 충전 확인.</td></tr>
+<tr><td>게임 규칙의 시작~종료</td><td class="score">15</td><td>낙하 파괴 → 등급·점수·경험치 → 강화 카드. 60초 단위 3개 진행 구간, 180초 종료·결과·재시작.<br><code>GameManager</code>, <code>StageDirector</code>, <code>ExperienceAbilityManager</code></td><td><span class="pending">최신 버전 한 판 검증</span><br>과거 180초 검증 기록은 있음. 현재 빌드에서 재확인 필요.</td></tr>
+<tr><td>게임 상태 연동 UI</td><td class="score">10</td><td>점수·콤보·경험치·능력·남은 시간·스테이지·카드·일시정지·결과 화면. 한글 TMP 글꼴 적용.<br><code>HudView</code>, <code>CardSelectView</code>, <code>GameOverlayView</code></td><td><span class="pending">최종 화면 캡처</span><br>카드 클릭·선택 후 입력·결과 화면을 확인.</td></tr>
+<tr><td>AI 코딩·프롬프트·수정 기록</td><td class="score">10</td><td>단계별 요청, 스크립트 역할, 수정과 검증 기록이 존재.<br><code>docs/WORKLOG.md</code>와 이번 개발 대화에서 실제 요청·수정 사례 발췌.</td><td><span class="state">기록 근거 있음</span><br>기존 기록 이후의 배경·카드·사운드 작업은 대화 근거로 보완.</td></tr>
+<tr><td>오류 분석·해결·주석 설명</td><td class="score">10</td><td>카드 화면 중 카메라 밀림을 로그로 재현하고, 흔들림 누적을 원인으로 확정해 추적 좌표를 분리. Sphere Cast·파괴 등급·이벤트 연동 코드를 주석과 함께 설명.</td><td><span class="state">강한 설명 사례 있음</span><br>증상 → 원인 → 수정 → 검증 순서로 제시.</td></tr>
+<tr><td>PC 빌드·플레이 영상</td><td class="score">10</td><td>빌드 목록 첫 씬은 <code>Assets/Scenes/Game.unity</code>. 현재 일반 파일 검색에서는 제출용 실행 파일·영상이 확인되지 않음. 무시된 폴더나 외부 산출물까지 없다고 단정하지 않음.</td><td><span class="pending">제출물 확보 필요</span><br>에디터 실행과 PC 실행 빌드를 구분.</td></tr>
+<tr><td>포트폴리오 구성</td><td class="score">10</td><td>기획 의도 → 개발 과정 → 결과물 순서. 현재 확인되는 PDF는 1차 Blender 과제용이며, Unity 2차 PDF는 별도 제작 필요.</td><td><span class="pending">PDF 제작 필요</span><br>첫 장 GitHub 링크, 정확한 파일명 필수.</td></tr>
+</tbody></table></div>
+<p class="note">예상 점수는 산정하지 않았습니다. 실제 채점은 제출 빌드와 증빙을 기준으로 평가자가 판단합니다. “1스테이지” 요구에는 현재 한 게임 씬을 제출하고, 내부의 세 진행 구간은 난이도 상승 구조로 설명하면 됩니다.</p>
+</section>
+<section>
+<h2>3. PDF 구성안 · 약 9쪽</h2>
+<div class="table-wrap"><table>
+<thead><tr><th scope="col">쪽</th><th scope="col">내용</th><th scope="col">사용할 근거</th></tr></thead><tbody>
+<tr><td>1</td><td>표지: 게임명·이름·한 줄 소개·GitHub 링크·대표 화면</td><td>최종 빌드 캡처, 저장소 URL</td></tr>
+<tr><td>2</td><td>기획 의도·핵심 재미·조작·목표·종료 규칙</td><td><code>docs/GAME_DESIGN.md</code>와 현재 구현</td></tr>
+<tr><td>3</td><td>1차 에셋을 Unity 게임으로 연결한 과정</td><td>1차 에셋 → 임포트 → 도자기·파편 프리팹 → 씬 적용</td></tr>
+<tr><td>4</td><td>게임플레이 핵심 코드</td><td>양손 충전·Sphere Cast·<code>AddForceAtPosition</code>의 작은 코드 발췌</td></tr>
+<tr><td>5</td><td>파괴·점수·경험치·카드·진행 구조</td><td><code>ImpactEvaluator</code>, <code>ScoreComboManager</code>, <code>ExperienceAbilityManager</code></td></tr>
+<tr><td>6</td><td>UI와 게임 상태 연결</td><td>플레이 HUD·카드 선택·일시정지·결과의 실제 화면</td></tr>
+<tr><td>7</td><td>AI 요청과 오류 해결 사례</td><td>카메라 밀림 재현 로그와 수정. 필요하면 배경 구성 시행착오를 두 번째 사례로 사용</td></tr>
+<tr><td>8</td><td>배경·사운드·가시성 마무리</td><td>넓힌 카메라 실패 → 가까운 구도 복원 → 주변 주방 구조. 바르코 바닥과 CC0 음원 출처 구분</td></tr>
+<tr><td>9</td><td>최종 결과·빌드 실행·영상·검증·회고</td><td>실제 실행 방법, 빌드·영상 위치, 확인된 테스트 결과와 남은 한계</td></tr>
+</tbody></table></div>
+<p class="note">개발 기록의 중간 수치에는 이후 변경된 값이 있습니다. 예를 들어 레벨업 요구량 증가폭은 최종 설정에서 5입니다. PDF의 최종 설명은 현재 코드와 <code>Assets/Data/GameTuning.asset</code>를 기준으로 작성합니다.</p>
+</section>
+<section>
+<h2>4. 오류 해결 사례에 쓸 수 있는 설명</h2>
+<h3>대표 사례 · 카드 선택 중 카메라가 계속 밀리는 문제</h3>
+<p><strong>증상:</strong> 도자기를 강하게 파괴한 뒤 카드 화면이 나타나면 카메라가 한쪽으로 계속 이동했습니다.</p>
+<p><strong>분석:</strong> 입력·고양이 위치·카메라 위치를 기록했습니다. 고양이는 정지해 있었지만 카메라만 이동했으므로, 단순한 키 입력 문제라는 초기 가설을 배제했습니다.</p>
+<p><strong>원인과 수정:</strong> 이전 프레임의 흔들림이 더해진 카메라 위치를 다음 추적의 기준으로 재사용했습니다. 정지 중에는 추적과 흔들림 시간이 진행되지 않아 오프셋이 누적됐습니다. 흔들림과 무관한 추적 좌표 <code>followX</code>를 분리하고, 정지 중에는 흔들림을 적용하지 않도록 수정했습니다.</p>
+<p><strong>검증 근거:</strong> 개발 기록에는 흔들림 0.08m, 300프레임 후에도 기준 X좌표가 유지된 결과가 있습니다. 제출 버전에서도 강한 파괴 직후 카드 선택 상황을 다시 확인합니다.</p>
+<h3>보조 사례 · 배경보다 플레이가 중요하다는 구도 수정</h3>
+<p>일체형 주방 에셋을 화면에 맞추며 비율을 누르고 낙하 바닥을 가렸습니다. 가구를 멀리 물리는 것만으로는 배경이 사라졌고, 카메라를 넓히자 고양이와 도자기가 작아졌습니다. 최종적으로 가까운 카메라를 복원하고 조리대·벽을 가장자리에서 잘려 보이게 연결했습니다. 실패한 결과도 숨기지 않고, 사용자 피드백이 설계 판단을 어떻게 바꿨는지 보여주는 사례로 활용할 수 있습니다.</p>
+</section>
+<section>
+<h2>5. 제출 전 진행 순서</h2>
+<ol>
+<li><strong>최신 버전 한 판 검증:</strong> 실제 키·마우스로 시작 → 이동·양손 Swipe → 파괴·콤보 → 카드 클릭·숫자 선택 → 세 진행 구간 → 시간 종료 → 결과 → R 재시작. 카드 선택 후 입력과 카메라가 정상인지 확인합니다.</li>
+<li><strong>사운드 청감 확인:</strong> 재생 이벤트 연결 검사는 통과했으나 자동 출력 파형 검사에서 신호가 0으로 나왔습니다. 실제 소리가 들리는지, 파괴음이 BGM에 묻히지 않는지 직접 확인해야 합니다. 스크립트 재컴파일 후 빠른 Play 설정에서 초기화 오류가 있었고, 씬 재로드 후 이벤트 검사는 통과했습니다.</li>
+<li><strong>Windows PC 빌드 생성·실행:</strong> 출력된 게임을 에디터 밖에서 실행하고 입력·한글·화면비·종료·재시작·사운드를 점검합니다. 현재 <code>SampleScene</code>도 빌드 목록에 있으므로 제출 대상 씬 구성을 확인합니다. 이 정리 작업에서는 빌드 설정을 바꾸지 않았습니다.</li>
+<li><strong>영상 1~2분 녹화:</strong> 일반 플레이, 연쇄 파괴·콤보, 카드 선택, 후반 도자기, 결과 화면을 편집으로 연결합니다. 약 3분짜리 게임 전체를 배속 없이 담을 필요는 없습니다. 편집된 시연임을 밝혀주세요.</li>
+<li><strong>PDF 제작:</strong> 위 구성으로 실제 화면·주요 코드·AI 요청·오류 해결을 배치하고 <code>02_Unity_정우영.pdf</code>로 저장합니다. 첫 장 GitHub 링크와 클릭 가능 여부를 확인합니다.</li>
+<li><strong>전달 점검:</strong> 빌드·영상·프로젝트는 저장소 또는 <code>02_정우영</code> 폴더로 전달합니다. 원격 저장소 URL 등록은 확인했지만 최신 수정의 업로드는 별도 확인이 필요합니다. commit·push는 이 작업에 포함하지 않았습니다.</li>
+</ol>
+</section>
+<section>
+<h2>6. 제출 형식과 출처</h2>
+<p><strong>필수:</strong> <code>02_Unity_정우영.pdf</code> 1부 + 첫 장 GitHub 링크 · PC 실행 빌드 · 플레이 영상 1~2분 · 평가지 대표 이미지 칸에 대표 화면을 붙여 출력.</p>
+<p><strong>에셋 구분:</strong> 고양이·식탁·도자기는 1차 과제의 바르코 생성·Blender 정리 결과입니다. 현재 주방 구조에는 단순 도형으로 만든 요소가 있고, 화분과 바닥 텍스처는 이번 바르코 생성물입니다. 비활성 일체형 카운터를 최종 사용 에셋처럼 소개하지 않습니다.</p>
+<p><strong>사운드:</strong> Kenney Impact Sounds·Interface Sounds·Music Jingles, Fupi의 Short Plingy Loop는 CC0입니다. 앞발 바람 소리는 코드 합성입니다. 바르코 생성 사운드가 아닙니다. 원문 라이선스는 <code>Assets/Audio/</code>에 있습니다.</p>
+<p><strong>글꼴:</strong> Jua, SIL OFL 1.1. <code>Assets/Fonts/Jua/OFL.txt</code>를 배포물에도 보존합니다.</p>
+<p class="note">근거: 제공된 「2차_Unity_평가지.hwp」 본문·채점표, 현재 프로젝트 코드·에셋·Build Settings, <code>docs/GAME_DESIGN.md</code>, <code>docs/WORKLOG.md</code>, 이번 개발 대화의 도구 실행 결과. 점수·완성도·미검증 기능의 성공을 임의로 확정하지 않았습니다.</p>
+</section>
+</main>
+</body>
+</html>

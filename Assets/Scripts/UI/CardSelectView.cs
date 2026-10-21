@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace PurrcelainPanic
 {
     /// <summary>
-    /// 레벨업 카드 화면. 게임이 멈춘 동안 카드 최대 3장을 보여 주고 숫자 1·2·3으로 고른다.
+    /// 레벨업 카드 화면. 게임이 멈춘 동안 카드 최대 3장을 보여 주고 클릭 또는 숫자 1·2·3으로 고른다.
     /// 그레이박스 단계라 UI를 코드로 만든다.
     /// </summary>
     public class CardSelectView : MonoBehaviour
@@ -64,6 +64,20 @@ namespace PurrcelainPanic
         {
             if (!abilities.IsChoosing)
                 return;
+            var mouse = Mouse.current;
+            if (mouse != null && mouse.leftButton.wasPressedThisFrame)
+            {
+                for (int i = 0; i < cards.Count; i++)
+                {
+                    if (cards[i].root.activeSelf &&
+                        RectTransformUtility.RectangleContainsScreenPoint(
+                            (RectTransform)cards[i].root.transform, mouse.position.ReadValue()))
+                    {
+                        abilities.Choose(i);
+                        return;
+                    }
+                }
+            }
             var kb = Keyboard.current;
             if (kb == null)
                 return;

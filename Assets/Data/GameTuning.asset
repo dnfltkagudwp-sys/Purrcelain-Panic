@@ -130,6 +130,7 @@ MonoBehaviour:
   ironPawPerLevel: 0.2
   dominoEffectPerLevel: 0.07
   quickSwipePerLevel: 0.12
+  quickChargePerLevel: 0.12
   wideArcPerLevel: 0.2
   alternatingPerLevel: 0.15
   alternatingWindow: 1.5
