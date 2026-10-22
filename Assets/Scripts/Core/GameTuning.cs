@@ -61,6 +61,8 @@ namespace PurrcelainPanic
         public float collectorScoreMultiplier = 2f;
         public int collectorBonusXp = 2;
         public float comboWindow = 2f;              // 마지막 파괴부터 이 시간 안에 다음 파괴가 오면 콤보 유지, 초
+        public float comboWindowReductionPerTier = 0.3f; // 10콤보마다 기본 유지시간 감소, 초
+        public float comboWindowMinimum = 1.1f;     // 강화 보너스 적용 전 최소 유지시간, 초
         public float comboStep = 0.25f;             // 콤보 배율 = 1 + (콤보 단계 - 1) × 0.25
         public float comboMaxMultiplier = 3f;
 

@@ -34,7 +34,10 @@ namespace PurrcelainPanic
 
         /// <summary>Combo Keeper(6단계)가 늘리는 유지시간, 초.</summary>
         public float ComboWindowBonus { get; set; }
-        public float ComboWindow => tuning.comboWindow + ComboWindowBonus;
+        public float ComboWindow =>
+            Mathf.Max(tuning.comboWindowMinimum,
+                tuning.comboWindow - (Combo / 10) * tuning.comboWindowReductionPerTier)
+            + ComboWindowBonus;
 
         void OnEnable() => BreakableVase.Broken += OnBroken;
         void OnDisable() => BreakableVase.Broken -= OnBroken;

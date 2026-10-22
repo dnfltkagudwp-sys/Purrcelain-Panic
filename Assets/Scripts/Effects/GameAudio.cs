@@ -147,19 +147,20 @@ namespace PurrcelainPanic
 
         void OnState(GameState state)
         {
-            if (state == GameState.Over)
+            if (state == GameState.Ending || state == GameState.Over)
             {
                 music.Stop();
                 foreach (var source in effects)
                     source.Stop();
-                Ui(gameOver);
+                if (state == GameState.Ending)
+                    Ui(gameOver);
             }
             else if (state == GameState.Paused)
             {
                 music.Pause();
                 Ui(pause);
             }
-            else
+            else if (state == GameState.Playing)
             {
                 music.UnPause();
                 Ui(resume);

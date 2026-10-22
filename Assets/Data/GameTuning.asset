@@ -50,6 +50,8 @@ MonoBehaviour:
   collectorScoreMultiplier: 2
   collectorBonusXp: 2
   comboWindow: 2
+  comboWindowReductionPerTier: 0.3
+  comboWindowMinimum: 1.1
   comboStep: 0.25
   comboMaxMultiplier: 3
   shardPoolSize: 12
